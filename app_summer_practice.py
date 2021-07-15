@@ -1,16 +1,17 @@
-import sys
+import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 import socket
-from _thread import *
+import _pickle as cPickle
+import os
+import threading
+import sys, time
 
-from PyQt5.QtWidgets import QLineEdit, QTextEdit
+from PyQt5.QtWidgets import QTextEdit
 
 HOST = '0.0.0.0'
 PORT = 50100
-serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serversocket.bind((HOST, PORT))
-serversocket.listen(5)
+
+stop_thread = False
 
 start_test = False
 temperature_test = False
@@ -19,7 +20,11 @@ temperature = 0
 
 
 class Ui_MainWindow(object):
+
+
+
     def setupUi(self, MainWindow):
+        self.rpm = 0
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
@@ -76,6 +81,43 @@ class Ui_MainWindow(object):
         self.textbox.resize(1260, 150)
         self.textbox.setReadOnly(True)
 
+        self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
+        self.horizontalSlider.setGeometry(QtCore.QRect(70, 110, 301, 25))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.horizontalSlider.setFont(font)
+        self.horizontalSlider.setAutoFillBackground(False)
+        self.horizontalSlider.setMaximum(255)
+        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setObjectName("horizontalSlider")
+        self.horizontalSlider.sliderMoved.connect(self.slider_move)
+
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(70, 72, 71, 21))
+        self.label_2.setObjectName("label_2")
+
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(70, 170, 81, 16))
+        self.label_3.setObjectName("label_3")
+
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(70, 200, 130, 40))
+        self.pushButton_3.setObjectName("pushButton_3")
+
+        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_4.setGeometry(QtCore.QRect(240, 200, 130, 40))
+        self.pushButton_4.setObjectName("pushButton_4")
+
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(70, 270, 47, 13))
+        self.label_4.setObjectName("label_4")
+
+        self.textEdit = QTextEdit(self.centralwidget)
+        self.textEdit.setGeometry(QtCore.QRect(70, 290, 81, 31))
+        self.textEdit.setObjectName("textEdit")
+        self.textEdit.setReadOnly(True)
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -96,6 +138,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menubar.addAction(self.menu_Exit.menuAction())
 
+        threading.Thread(target=self.start_server).start()
         self.retranslateUi(MainWindow)
         MainWindow.setStatusBar(self.statusbar)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -110,8 +153,49 @@ class Ui_MainWindow(object):
         self.checkBox_3.setText(_translate("MainWindow", "Motor speed"))
         self.pushButton.setText(_translate("MainWindow", "Start test"))
         self.pushButton_2.setText(_translate("MainWindow", "Stop test"))
+        self.label_2.setText(_translate("MainWindow", "Manual RPM"))
+        self.label_3.setText(_translate("MainWindow", "Motor direction:"))
+        self.pushButton_3.setText(_translate("MainWindow", "Positive"))
+        self.pushButton_4.setText(_translate("MainWindow", "Negative"))
+        self.label_4.setText(_translate("MainWindow", "RPM"))
         self.menu_Exit.setTitle(_translate("MainWindow", "&Exit"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
+
+    def start_server(self):
+        global server_created_flag
+        server_created_flag = True
+
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.bind((HOST, PORT))
+        print("Waiting for client!")
+        self.s.listen()
+        self.conn, addr = self.s.accept()
+        print('Connected by ', addr)
+
+        threading.Thread(target=self.recv_messages).start()
+
+
+    def recv_messages(self):
+        self.stop_event = threading.Event()
+        self.c_thread = threading.Thread(target=self.recv_messages_handler, args=(self.stop_event,))
+        self.c_thread.start()
+
+    def recv_messages_handler(self, stop_event):
+        global server_created_flag
+        global stop_thread
+        global flag_low
+        global flag
+        while server_created_flag and not stop_event.isSet() and stop_thread == False:
+            pass
+            # data = self.conn.recv(1024)
+
+    def send_bytes_to_client(self, response):
+        try:
+            self.conn.sendall(bytes(response.encode()))
+            print("Am trimis '" + response + "' catre client!")
+        except BrokenPipeError:
+            print("Client has been disconnected!")
+
 
     def temperature_test_status(self, state):
         global temperature_test
@@ -126,26 +210,34 @@ class Ui_MainWindow(object):
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test started!")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
+        response = "S " + str(self.horizontalSlider.value())
+        self.send_bytes_to_client(response)
         start_test = True
 
     def stop(self):
         global start_test
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test stoped!")
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test stopped!")
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(False)
+        self.send_bytes_to_client("X")
         start_test = False
+
+    def slider_move(self):
+        self.rpm = int((self.horizontalSlider.value() * 14000) / 255)
+        self.textEdit.setPlainText(str(self.rpm))
 
 
 class MyWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
+        global stop_thread
         result = QtWidgets.QMessageBox.question(self,
                                                 "Confirm Exit",
                                                 "Are you sure you want to exit ?",
                                                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
 
         if result == QtWidgets.QMessageBox.Yes:
+            stop_thread = True
             event.accept()
-
         elif result == QtWidgets.QMessageBox.No:
             event.ignore()
 
@@ -157,54 +249,27 @@ class MyWindow(QtWidgets.QMainWindow):
         self.move(frameGm.topLeft())
 
 
-# Server
-def fun(clientsocket, address):
-    global ui
-    global temperature, temperature_test, start_test
-    print('Connected by', address)
-    while True:
-        if start_test:
-            if temperature_test:
-                clientsocket.sendall('a'.encode())
-                print("Temperature test")
-                try:
-                    data = clientsocket.recv(1024)
-                    if not data:
-                        break
-                    try:
-                        temperature = float(data.decode())
-                    except:
-                        pass
-                    print('Temperature: ', temperature)
-                except:
-                    print('Disconnected!')
-                    return
-            if temperature > 30:
-                print("Test failed! Temperature higher than 30. Temperature = " + str(temperature))
-               # ui.textbox.setPlainText(ui.textbox.toPlainText() + '\n' + "Test failed! Temperature higher than 30. " +
-             #                                                             "Temperature = " + str(temperature))
-                start_test = False
-                clientsocket.sendall('x'.encode())
-
-    clientsocket.close()
-    print('S-a terminat comunicarea cu ', address)
+def kill_proc_tree(pid, including_parent=True):
+    parent = psutil.Process(pid)
+    if including_parent:
+        parent.kill()
 
 
-def run_server():
-    while True:
-        print('#########################################################################')
-        print('Serverul asculta potentiali clienti.')
-        print('#########################################################################')
-        (conn, addr) = serversocket.accept()
-        start_new_thread(fun, (conn, addr))
+def main():
+    global server_created_flag
+    import sys
+    global app
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = MyWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.center()
 
+    sys.exit(app.exec_())
 
-app = QtWidgets.QApplication(sys.argv)
-MainWindow = MyWindow()
-ui = Ui_MainWindow()
-ui.setupUi(MainWindow)
 
 if __name__ == "__main__":
-    start_new_thread(run_server, ())
-    MainWindow.center()
-    sys.exit(app.exec_())
+    main()
+
+me = os.getpid()
+kill_proc_tree(me)
