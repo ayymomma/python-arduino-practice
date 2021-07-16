@@ -6,25 +6,29 @@ import os
 import threading
 import sys, time
 
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QTextEdit
 
+
+# SERVER IP and HOST
 HOST = '0.0.0.0'
 PORT = 50100
 
+# FLAGS
 stop_thread = False
-
 start_test = False
 temperature_test = False
 
+# VARIABLES
 temperature = 0
+
 
 
 class Ui_MainWindow(object):
 
-
-
     def setupUi(self, MainWindow):
         self.rpm = 0
+        self.test_time = 30
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
@@ -62,7 +66,7 @@ class Ui_MainWindow(object):
 
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setGeometry(QtCore.QRect(690, 390, 571, 23))
-        self.progressBar.setProperty("value", 24)
+        self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
@@ -214,6 +218,14 @@ class Ui_MainWindow(object):
         self.send_bytes_to_client(response)
         start_test = True
 
+        self.counter = 0
+        self.timer = QTimer()
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.start_test_counter)
+        self.timer.start()
+
+        threading.Thread(target=self.start_test_counter).start()
+
     def stop(self):
         global start_test
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test stopped!")
@@ -225,6 +237,16 @@ class Ui_MainWindow(object):
     def slider_move(self):
         self.rpm = int((self.horizontalSlider.value() * 14000) / 255)
         self.textEdit.setPlainText(str(self.rpm))
+
+
+    def start_test_counter(self):
+        self.counter += 1
+        self.progressBar.setValue(int((self.counter * 100) / self.test_time))
+
+        if self.counter > self.test_time:
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test SUCCEED!")
+            self.stop()
+            self.timer.stop()
 
 
 class MyWindow(QtWidgets.QMainWindow):
