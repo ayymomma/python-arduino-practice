@@ -18,6 +18,10 @@ PORT = 50100
 stop_thread = False
 start_test = False
 temperature_test = False
+voltage_test = False
+rotation_test = False
+
+
 
 # VARIABLES
 temperature = 0
@@ -27,6 +31,7 @@ temperature = 0
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
+        self.test_case = 0
         self.rpm = 0
         self.test_time = 30
 
@@ -178,6 +183,9 @@ class Ui_MainWindow(object):
 
         threading.Thread(target=self.recv_messages).start()
 
+    def check_temp(self, temp, hum):
+        if temp > 20:
+            print("STOP" + " " + temp +  " " + hum)
 
     def recv_messages(self):
         self.stop_event = threading.Event()
@@ -185,13 +193,18 @@ class Ui_MainWindow(object):
         self.c_thread.start()
 
     def recv_messages_handler(self, stop_event):
-        global server_created_flag
-        global stop_thread
-        global flag_low
-        global flag
-        while server_created_flag and not stop_event.isSet() and stop_thread == False:
-            pass
-            # data = self.conn.recv(1024)
+        while True:
+            data = self.conn.recv(1024)
+            if self.test_case == 1:
+                d_s = data.split(" ")
+                temp = d_s[0].split("=")[1]
+                hum = d_s[1].split("=")[1]
+                try:
+                    self.check_temp(float(temp), float(hum))
+                except:
+                    pass
+
+
 
     def send_bytes_to_client(self, response):
         try:
@@ -214,7 +227,8 @@ class Ui_MainWindow(object):
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test started!")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
-        response = "S " + str(self.horizontalSlider.value())
+        self.test_cases()
+        response = "S " + self.test_case + " " + str(self.horizontalSlider.value())
         self.send_bytes_to_client(response)
         start_test = True
 
@@ -247,6 +261,28 @@ class Ui_MainWindow(object):
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test SUCCEED!")
             self.stop()
             self.timer.stop()
+
+    def test_cases(self):
+        global temperature_test, voltage_test, rotation_test
+        if temperature_test:
+            if voltage_test:
+                if rotation_test:
+                    self.test_case = 7
+                    return
+                self.test_case = 4
+                return
+            self.test_case = 1
+            return
+        if voltage_test:
+            if rotation_test:
+                self.test_case = 6
+                return
+            self.test_case = 2
+            return
+        if rotation_test:
+            self.test_case = 3
+
+
 
 
 class MyWindow(QtWidgets.QMainWindow):
