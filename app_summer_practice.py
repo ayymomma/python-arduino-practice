@@ -7,8 +7,7 @@ import threading
 import sys, time
 
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QTextEdit
-
+from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel
 
 # SERVER IP and HOST
 HOST = '0.0.0.0'
@@ -21,11 +20,12 @@ temperature_test = False
 voltage_test = False
 rotation_test = False
 
+temperature_fail = False
 
+max_temp = 27.00
 
 # VARIABLES
 temperature = 0
-
 
 
 class Ui_MainWindow(object):
@@ -184,27 +184,32 @@ class Ui_MainWindow(object):
         threading.Thread(target=self.recv_messages).start()
 
     def check_temp(self, temp, hum):
-        if temp > 20:
-            print("STOP" + " " + temp +  " " + hum)
+        global max_temp, temperature_fail
+        #self.pop.edit_text(temp, hum)
+        if temp > max_temp:
+            temperature_fail = True
+        else:
+            print(temp)
 
     def recv_messages(self):
         self.stop_event = threading.Event()
-        self.c_thread = threading.Thread(target=self.recv_messages_handler, args=(self.stop_event,))
+        self.c_thread = threading.Thread(target=self.recv_messages_handler)
         self.c_thread.start()
 
-    def recv_messages_handler(self, stop_event):
+    def recv_messages_handler(self):
         while True:
-            data = self.conn.recv(1024)
-            if self.test_case == 1:
-                d_s = data.split(" ")
-                temp = d_s[0].split("=")[1]
-                hum = d_s[1].split("=")[1]
-                try:
-                    self.check_temp(float(temp), float(hum))
-                except:
-                    pass
-
-
+            if start_test:
+                data = self.conn.recv(1024)
+                data = data.decode()
+                print(data)
+                if self.test_case == 1:
+                    d_s = data.split(" ")
+                    temp = d_s[0].split("=")[1]
+                    hum = d_s[1].split("=")[1]
+                    try:
+                        self.check_temp(float(temp), float(hum))
+                    except:
+                        pass
 
     def send_bytes_to_client(self, response):
         try:
@@ -212,7 +217,6 @@ class Ui_MainWindow(object):
             print("Am trimis '" + response + "' catre client!")
         except BrokenPipeError:
             print("Client has been disconnected!")
-
 
     def temperature_test_status(self, state):
         global temperature_test
@@ -223,12 +227,13 @@ class Ui_MainWindow(object):
         print(temperature_test)
 
     def start(self):
-        global start_test
+        global start_test, temperature_fail
+        temperature_fail = False
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test started!")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
         self.test_cases()
-        response = "S " + self.test_case + " " + str(self.horizontalSlider.value())
+        response = "S " + str(self.test_case) + " " + str(self.horizontalSlider.value())
         self.send_bytes_to_client(response)
         start_test = True
 
@@ -246,21 +251,25 @@ class Ui_MainWindow(object):
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(False)
         self.send_bytes_to_client("X")
+        self.timer.stop()
+        self.progressBar.setValue(0)
         start_test = False
 
     def slider_move(self):
         self.rpm = int((self.horizontalSlider.value() * 14000) / 255)
         self.textEdit.setPlainText(str(self.rpm))
 
-
     def start_test_counter(self):
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
+        if temperature_fail:
+            self.textbox.setPlainText(
+                self.textbox.toPlainText() + '\n' + "Test FAILED! Temperature is greater than limit!")
+            self.stop()
         if self.counter > self.test_time:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test SUCCEED!")
             self.stop()
-            self.timer.stop()
 
     def test_cases(self):
         global temperature_test, voltage_test, rotation_test
@@ -283,6 +292,16 @@ class Ui_MainWindow(object):
             self.test_case = 3
 
 
+class Popup(QDialog):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.resize(300, 300)
+        self.label = QLabel()
+        self.label2 = QLabel()
+
+    def edit_text(self, temp, hum):
+        self.label.setText("Temperature: " + temp)
+        self.label2.setText("Humidity: " + hum)
 
 
 class MyWindow(QtWidgets.QMainWindow):
