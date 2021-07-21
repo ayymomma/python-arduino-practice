@@ -1,3 +1,4 @@
+
 import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
@@ -7,7 +8,7 @@ import threading
 import sys, time
 
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel
+from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow
 
 # SERVER IP and HOST
 HOST = '0.0.0.0'
@@ -18,15 +19,23 @@ stop_thread = False
 start_test = False
 temperature_test = False
 voltage_test = False
-rotation_test = False
+speed_test = False
 
 temperature_fail = False
+voltage_fail = False
+speed_fail = False
 
 max_temp = 27.00
 
-# VARIABLES
-temperature = 0
+class TempWindow(QMainWindow):
+    def __init__(self, parent = None):
+        super(TempWindow, self).__init__(parent)
+        self.label_temp_1 = QLabel()
+        self.label_hum_1 = QLabel()
 
+    def change_label_text(self, temp1, hum1):
+        self.label_temp_1.setText("HBridge temperature: " + str(temp1))
+        self.label_hum_1.setText("HBridge humidity: " + str(hum1))
 
 class Ui_MainWindow(object):
 
@@ -34,6 +43,11 @@ class Ui_MainWindow(object):
         self.test_case = 0
         self.rpm = 0
         self.test_time = 30
+        self.temp = 0
+        self.hum = 0
+
+        self.MainWindow = MainWindow
+
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
@@ -185,7 +199,6 @@ class Ui_MainWindow(object):
 
     def check_temp(self, temp, hum):
         global max_temp, temperature_fail
-        #self.pop.edit_text(temp, hum)
         if temp > max_temp:
             temperature_fail = True
         else:
@@ -204,10 +217,10 @@ class Ui_MainWindow(object):
                 print(data)
                 if self.test_case == 1:
                     d_s = data.split(" ")
-                    temp = d_s[0].split("=")[1]
-                    hum = d_s[1].split("=")[1]
+                    self.temp = d_s[0].split("=")[1]
+                    self.hum = d_s[1].split("=")[1]
                     try:
-                        self.check_temp(float(temp), float(hum))
+                        self.check_temp(float(self.temp), float(self.hum))
                     except:
                         pass
 
@@ -227,15 +240,24 @@ class Ui_MainWindow(object):
         print(temperature_test)
 
     def start(self):
-        global start_test, temperature_fail
+        global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test
         temperature_fail = False
+        voltage_fail = False
+        speed_fail = False
+
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test started!")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
         self.test_cases()
         response = "S " + str(self.test_case) + " " + str(self.horizontalSlider.value())
         self.send_bytes_to_client(response)
+
         start_test = True
+
+        self.temp_box = temperature_test
+        self.voltage_box = voltage_test
+        self.speed_box = speed_test
+
 
         self.counter = 0
         self.timer = QTimer()
@@ -263,6 +285,13 @@ class Ui_MainWindow(object):
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
+
+        # self.temp_window.change_label_text(self.temp, self.hum)
+        if self.temp_box:
+            #self.temp_window = TempWindow(self.MainWindow)
+            #self.temp_window.show()
+            #self.temp_window.change_label_text(0, 0)
+            pass
         if temperature_fail:
             self.textbox.setPlainText(
                 self.textbox.toPlainText() + '\n' + "Test FAILED! Temperature is greater than limit!")
@@ -290,19 +319,6 @@ class Ui_MainWindow(object):
             return
         if rotation_test:
             self.test_case = 3
-
-
-class Popup(QDialog):
-    def __init__(self,parent):
-        super().__init__(parent)
-        self.resize(300, 300)
-        self.label = QLabel()
-        self.label2 = QLabel()
-
-    def edit_text(self, temp, hum):
-        self.label.setText("Temperature: " + temp)
-        self.label2.setText("Humidity: " + hum)
-
 
 class MyWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
