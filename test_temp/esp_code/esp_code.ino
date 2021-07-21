@@ -81,10 +81,13 @@ void loop()
         char m;
         char command[14];
         client.read();
-
+        
+        String s2 = "";
+        
         if(client.available()){
           test_case = client.read();
         }
+        client.read();
         if(client.available())
         {
           r = client.read();
@@ -103,23 +106,19 @@ void loop()
         else{
           m = ' ';
         }
+
+        String s1 = "b'START + ";
+
         
-        command[0] = 'b';
-        command[1] = '\'';
-        command[2] = 'S';
-        command[3] = 'T';
-        command[4] = 'A';
-        command[5] = 'R';
-        command[6] = 'T';
-        command[7] = ' ';
-        command[8] = '+';
-        command[9] = ' ';
-        command[10] = r;
-        command[11] = p;
-        command[12] = m;
-        command[13] = '\'';
-        command[14] = '\0';
-        Serial.println(command);
+        if(r != ' ')
+          s2 = s2 + r;
+        if(p != ' ')
+          s2 = s2 + p;
+        if(m != ' ')
+          s2 = s2 + m;
+
+        String s3 = "'";
+        Serial.println(s1 + s2 + s3);
      }
      if( input == 'X' )
         Serial.println("b'STOP'");
