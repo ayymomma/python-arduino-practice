@@ -1,4 +1,3 @@
-
 import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
@@ -9,6 +8,7 @@ import sys, time
 
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow
+from datetime import datetime
 
 # SERVER IP and HOST
 HOST = '0.0.0.0'
@@ -25,17 +25,80 @@ temperature_fail = False
 voltage_fail = False
 speed_fail = False
 
-max_temp = 27.00
+max_temp = 30.00
 
-class TempWindow(QMainWindow):
+class test1_Window(QWidget):
     def __init__(self, parent = None):
-        super(TempWindow, self).__init__(parent)
-        self.label_temp_1 = QLabel()
-        self.label_hum_1 = QLabel()
+        super(test1_Window, self).__init__(parent)
+        # label = QLabel("Sub Window", self)
+        self.setupUi()
 
-    def change_label_text(self, temp1, hum1):
-        self.label_temp_1.setText("HBridge temperature: " + str(temp1))
-        self.label_hum_1.setText("HBridge humidity: " + str(hum1))
+    def setupUi(self):
+        self.setObjectName("Form")
+        self.resize(278, 193)
+        self.label_2 = QtWidgets.QLabel(self)
+        self.label_2.setGeometry(QtCore.QRect(90, 10, 91, 16))
+        self.label_2.setObjectName("label_2")
+        self.line = QtWidgets.QFrame(self)
+        self.line.setGeometry(QtCore.QRect(0, 30, 291, 16))
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.line_2 = QtWidgets.QFrame(self)
+        self.line_2.setGeometry(QtCore.QRect(125, 37, 20, 160))
+        self.line_2.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_2.setObjectName("line_2")
+
+        self.label = QtWidgets.QLabel(self)
+        self.label.setGeometry(QtCore.QRect(20, 50, 110, 20))
+        self.label.setObjectName("label")
+        self.label_3 = QtWidgets.QLabel(self)
+        self.label_3.setGeometry(QtCore.QRect(160, 50, 110, 20))
+        self.label_3.setObjectName("label_3")
+        self.lineEdit = QtWidgets.QLineEdit(self)
+        self.lineEdit.setGeometry(QtCore.QRect(30, 80, 60, 20))
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit.setReadOnly(True)
+        self.lineEdit_2 = QtWidgets.QLineEdit(self)
+        self.lineEdit_2.setGeometry(QtCore.QRect(170, 80, 60, 20))
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setReadOnly(True)
+        self.label_4 = QtWidgets.QLabel(self)
+        self.label_4.setGeometry(QtCore.QRect(20, 120, 110, 20))
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self)
+        self.label_5.setGeometry(QtCore.QRect(160, 120, 110, 20))
+        self.label_5.setObjectName("label_5")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self)
+        self.lineEdit_3.setGeometry(QtCore.QRect(30, 150, 60, 20))
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_3.setReadOnly(True)
+        self.lineEdit_4 = QtWidgets.QLineEdit(self)
+        self.lineEdit_4.setGeometry(QtCore.QRect(170, 150, 60, 20))
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.lineEdit_4.setReadOnly(True)
+
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Form", "Form"))
+        self.label_2.setText(_translate("Form", "Temperature test"))
+        self.label.setText(_translate("Form", "HBridge Temperature"))
+        self.label_3.setText(_translate("Form", "Motor Temperature"))
+        self.label_4.setText(_translate("Form", "HBridge Humidity"))
+        self.label_5.setText(_translate("Form", "Motor Humidity"))
+
+    def edit_temps(self,htemp, hhum, mtemp, mhum):
+        self.lineEdit.setText(str(htemp))
+        self.lineEdit_3.setText(str(hhum))
+        self.lineEdit_2.setText(str(mtemp))
+        self.lineEdit_4.setText(str(mhum))
+
+    def closeEvent(self, event):
+        event.ignore()
 
 class Ui_MainWindow(object):
 
@@ -45,12 +108,22 @@ class Ui_MainWindow(object):
         self.test_time = 30
         self.temp = 0
         self.hum = 0
-
-        self.MainWindow = MainWindow
-
+        self.maxHTemp = 0
+        self.maxMTemp = 0
+        self.minHTemp = 0
+        self.minMTemp = 0
+        self.maxHHum = 0
+        self.maxMHum = 0
+        self.minHHum = 0
+        self.minMHum = 0
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
+
+        self.openSub()
+        self.sub.hide()
+
+        self.MainWindow = MainWindow
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -239,13 +312,25 @@ class Ui_MainWindow(object):
             temperature_test = False
         print(temperature_test)
 
+
+    def set_vars_to_zero(self):
+        self.maxHTemp = 0
+        self.maxMTemp = 0
+        self.minHTemp = 0
+        self.minMTemp = 0
+        self.maxHHum = 0
+        self.maxMHum = 0
+        self.minHHum = 0
+        self.minMHum = 0
+
     def start(self):
         global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test
         temperature_fail = False
         voltage_fail = False
         speed_fail = False
+        self.set_vars_to_zero()
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test started!")
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test started!")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
         self.test_cases()
@@ -258,7 +343,6 @@ class Ui_MainWindow(object):
         self.voltage_box = voltage_test
         self.speed_box = speed_test
 
-
         self.counter = 0
         self.timer = QTimer()
         self.timer.setInterval(1000)
@@ -269,11 +353,19 @@ class Ui_MainWindow(object):
 
     def stop(self):
         global start_test
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test stopped!")
+
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HTemp: " + str(self.maxHTemp))
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HHum: " + str(self.maxHHum))
+
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HTemp: " + str(self.maxMTemp))
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HHum: " + str(self.maxMHum))
+
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!")
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(False)
         self.send_bytes_to_client("X")
         self.timer.stop()
+        self.sub.hide()
         self.progressBar.setValue(0)
         start_test = False
 
@@ -281,30 +373,45 @@ class Ui_MainWindow(object):
         self.rpm = int((self.horizontalSlider.value() * 14000) / 255)
         self.textEdit.setPlainText(str(self.rpm))
 
+    def openSub(self):
+        self.sub = test1_Window()
+        self.sub.show()
+
+    def check_temps(self, temp, hum):
+        if temp > self.maxHTemp:
+            self.maxHTemp = temp
+        if temp < self.minHTemp:
+           self.minHTemp = temp
+
+        if hum > self.maxHHum:
+           self.maxHHum = hum
+
+        if hum < self.minHHum:
+           self.minHHum = hum
+
+
     def start_test_counter(self):
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
+        self.check_temps(float(self.temp), float(self.hum))
 
-        # self.temp_window.change_label_text(self.temp, self.hum)
         if self.temp_box:
-            #self.temp_window = TempWindow(self.MainWindow)
-            #self.temp_window.show()
-            #self.temp_window.change_label_text(0, 0)
-            pass
+            self.sub.edit_temps(self.temp, self.hum, 0, 0)
+            self.sub.show()
         if temperature_fail:
             self.textbox.setPlainText(
-                self.textbox.toPlainText() + '\n' + "Test FAILED! Temperature is greater than limit!")
+                self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test FAILED! Temperature is greater than limit!")
             self.stop()
         if self.counter > self.test_time:
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + "Test SUCCEED!")
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test SUCCEED!")
             self.stop()
 
     def test_cases(self):
-        global temperature_test, voltage_test, rotation_test
+        global temperature_test, voltage_test, speed_test
         if temperature_test:
             if voltage_test:
-                if rotation_test:
+                if speed_test:
                     self.test_case = 7
                     return
                 self.test_case = 4
@@ -312,34 +419,13 @@ class Ui_MainWindow(object):
             self.test_case = 1
             return
         if voltage_test:
-            if rotation_test:
+            if speed_test:
                 self.test_case = 6
                 return
             self.test_case = 2
             return
-        if rotation_test:
+        if speed_test:
             self.test_case = 3
-
-class MyWindow(QtWidgets.QMainWindow):
-    def closeEvent(self, event):
-        global stop_thread
-        result = QtWidgets.QMessageBox.question(self,
-                                                "Confirm Exit",
-                                                "Are you sure you want to exit ?",
-                                                QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-
-        if result == QtWidgets.QMessageBox.Yes:
-            stop_thread = True
-            event.accept()
-        elif result == QtWidgets.QMessageBox.No:
-            event.ignore()
-
-    def center(self):
-        frameGm = self.frameGeometry()
-        screen = QtWidgets.QApplication.desktop().screenNumber(QtWidgets.QApplication.desktop().cursor().pos())
-        centerPoint = QtWidgets.QApplication.desktop().screenGeometry(screen).center()
-        frameGm.moveCenter(centerPoint)
-        self.move(frameGm.topLeft())
 
 
 def kill_proc_tree(pid, including_parent=True):
@@ -349,15 +435,12 @@ def kill_proc_tree(pid, including_parent=True):
 
 
 def main():
-    global server_created_flag
     import sys
-    global app
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
+    MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    MainWindow.center()
-
+    MainWindow.show()
     sys.exit(app.exec_())
 
 
