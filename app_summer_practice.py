@@ -34,7 +34,7 @@ class test1_Window(QWidget):
         self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("Form")
+        self.setObjectName("Test case 1")
         self.resize(278, 193)
         self.label_2 = QtWidgets.QLabel(self)
         self.label_2.setGeometry(QtCore.QRect(90, 10, 91, 16))
@@ -84,7 +84,7 @@ class test1_Window(QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("Form", "Form"))
+        self.setWindowTitle(_translate("Form", "Test Case 1"))
         self.label_2.setText(_translate("Form", "Temperature test"))
         self.label.setText(_translate("Form", "HBridge Temperature"))
         self.label_3.setText(_translate("Form", "Motor Temperature"))
@@ -108,6 +108,8 @@ class Ui_MainWindow(object):
         self.test_time = 30
         self.temp = 0
         self.hum = 0
+        self.motor_temp = 0
+        self.motor_hum = 0
         self.maxHTemp = 0
         self.maxMTemp = 0
         self.minHTemp = 0
@@ -270,12 +272,10 @@ class Ui_MainWindow(object):
 
         threading.Thread(target=self.recv_messages).start()
 
-    def check_temp(self, temp, hum):
+    def check_temp(self, temp, hum, m_temp, m_hum):
         global max_temp, temperature_fail
-        if temp > max_temp:
+        if temp > max_temp or m_temp > max_temp:
             temperature_fail = True
-        else:
-            print(temp)
 
     def recv_messages(self):
         self.stop_event = threading.Event()
@@ -288,14 +288,20 @@ class Ui_MainWindow(object):
                 data = self.conn.recv(1024)
                 data = data.decode()
                 print(data)
-                if self.test_case == 1:
-                    d_s = data.split(" ")
-                    self.temp = d_s[0].split("=")[1]
-                    self.hum = d_s[1].split("=")[1]
-                    try:
-                        self.check_temp(float(self.temp), float(self.hum))
-                    except:
-                        pass
+                try:
+                    if self.test_case == 1:
+                        d_s = data.split(" ")
+                        self.temp = d_s[0].split("=")[1]
+                        self.hum = d_s[1].split("=")[1]
+                        self.motor_temp = d_s[2].split("=")[1]
+                        self.motor_hum = d_s[3].split("=")[1]
+                        try:
+                            self.check_temp(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
+                        except:
+                            pass
+                except:
+                    pass
+
 
     def send_bytes_to_client(self, response):
         try:
@@ -354,11 +360,11 @@ class Ui_MainWindow(object):
     def stop(self):
         global start_test
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HTemp: " + str(self.maxHTemp))
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HHum: " + str(self.maxHHum))
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp))
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum))
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HTemp: " + str(self.maxMTemp))
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Max HHum: " + str(self.maxMHum))
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp))
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
 
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!")
         self.pushButton.setEnabled(True)
@@ -377,7 +383,7 @@ class Ui_MainWindow(object):
         self.sub = test1_Window()
         self.sub.show()
 
-    def check_temps(self, temp, hum):
+    def check_temps(self, temp, hum, motor_temp, motor_hum):
         if temp > self.maxHTemp:
             self.maxHTemp = temp
         if temp < self.minHTemp:
@@ -389,15 +395,25 @@ class Ui_MainWindow(object):
         if hum < self.minHHum:
            self.minHHum = hum
 
+        if motor_temp > self.maxMTemp:
+            self.maxMTemp = motor_temp
+        if motor_temp < self.minMTemp:
+           self.minMTemp = motor_temp
+
+        if motor_hum > self.maxMHum:
+           self.maxMHum = motor_hum
+
+        if motor_hum < self.minMHum:
+           self.minMHum = motor_hum
 
     def start_test_counter(self):
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
-        self.check_temps(float(self.temp), float(self.hum))
+        self.check_temps(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
 
         if self.temp_box:
-            self.sub.edit_temps(self.temp, self.hum, 0, 0)
+            self.sub.edit_temps(self.temp, self.hum, self.motor_temp, self.motor_hum)
             self.sub.show()
         if temperature_fail:
             self.textbox.setPlainText(
