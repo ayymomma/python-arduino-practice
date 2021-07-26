@@ -1,20 +1,23 @@
 #include <DHT.h>  // Including library for dht 
 #include <ESP8266WiFi.h>
 
-//const char *ssid =  "DIGI-T53k";    
-//const char *pass =  "TF359U9k";
-const char *ssid = "ureche";
-const char *pass = "qwerty123";
+const char *ssid =  "DIGI-T53k";    
+const char *pass =  "TF359U9k";
+//const char *ssid = "ureche";
+//const char *pass = "qwerty123";
 
-//const uint16_t port = 50100;
-//const char *host = "192.168.100.44";
 const uint16_t port = 50100;
-const char *host = "192.168.43.198";
+const char *host = "192.168.100.44";
+//const uint16_t port = 50100;
+//const char *host = "192.168.43.198";
 
 char test_case = '0';
  
-#define DHTPIN 2     
+#define DHTPIN 2
+#define DHTPIN_MOTOR 14
+     
 DHT dht(DHTPIN, DHT11);
+DHT dht_motor(DHTPIN_MOTOR, DHT11);
  
 WiFiClient client;
  
@@ -23,6 +26,7 @@ void setup()
       Serial.begin(115200);
       delay(10);
       dht.begin();
+      dht_motor.begin();
       
       Serial.println("Connecting to ");
       Serial.println(ssid);
@@ -121,7 +125,10 @@ void loop()
         Serial.println(s1 + s2 + s3);
      }
      if( input == 'X' )
+     {
         Serial.println("b'STOP'");
+        test_case = '0';
+     }
 
    }
 
@@ -130,22 +137,21 @@ void loop()
       float h = dht.readHumidity();
       float t = dht.readTemperature();
 
-      if (isnan(h) || isnan(t)) 
+      float mh = dht_motor.readHumidity();
+      float mt = dht_motor.readTemperature();
+
+      /*if (isnan(h) || isnan(t) || isnan(mh) || isnan(mt)) 
          {
              client.print("Failed to read from DHT sensor!");
              delay(1000);
          }
-      else{
-        char tt[10];
-        char hh[10];
-
-        dtostrf(t, 2, 2, tt);
-        dtostrf(h, 2, 2, hh);
+      else{*/
+        
         String s1 = "T=";
         String s2 = " ";
         String s3 = "H=";
-        client.print(s1 + t + s2 + s3 + h);
-      }
+        client.print(s1 + t + s2 + s3 + h + s2 + s1 + mt + s2 + s3 + mh);
+    // }
       
    }
    delay(1000);
