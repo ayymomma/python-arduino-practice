@@ -1,20 +1,22 @@
 #include <DHT.h>  // Including library for dht 
 #include <ESP8266WiFi.h>
 
-const char *ssid =  "DIGI-T53k";    
-const char *pass =  "TF359U9k";
-//const char *ssid = "ureche";
-//const char *pass = "qwerty123";
+//const char *ssid =  "DIGI-T53k";    
+//const char *pass =  "TF359U9k";
+const char *ssid = "ureche";
+const char *pass = "qwerty123";
 
-const uint16_t port = 50100;
-const char *host = "192.168.100.44";
 //const uint16_t port = 50100;
-//const char *host = "192.168.43.198";
+//const char *host = "192.168.100.44";
+const uint16_t port = 50100;
+const char *host = "192.168.43.198";
 
 char test_case = '0';
+int voltage_value = 0;
  
 #define DHTPIN 2
 #define DHTPIN_MOTOR 14
+#define ANALOGPIN A0
      
 DHT dht(DHTPIN, DHT11);
 DHT dht_motor(DHTPIN_MOTOR, DHT11);
@@ -85,6 +87,10 @@ void loop()
         char m;
         char command[14];
         client.read();
+
+        String motor_sens = "";
+        motor_sens = client.read();
+        client.read();
         
         String s2 = "";
         
@@ -122,7 +128,8 @@ void loop()
           s2 = s2 + m;
 
         String s3 = "'";
-        Serial.println(s1 + s2 + s3);
+        String s4 = " + ";
+        Serial.println(s1 + motor_sens + s4 + s2 + s3);
      }
      if( input == 'X' )
      {
@@ -154,6 +161,13 @@ void loop()
     // }
       
    }
+
+
+   if(test_case == '2'){
+       voltage_value = analogRead(ANALOGPIN);
+       client.print(voltage_value);
+   }
+   
    delay(1000);
  
 }
