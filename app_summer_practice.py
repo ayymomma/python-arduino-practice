@@ -100,6 +100,22 @@ class test1_Window(QWidget):
     def closeEvent(self, event):
         event.ignore()
 
+class test2_Window(QWidget):
+    def __init__(self, parent = None):
+        super(test2_Window, self).__init__(parent)
+        self.setupUi()
+
+    def setupUi(self):
+        pass
+
+    def retranslateUi(self):
+        pass
+
+    def edit_voltage(self):
+        pass
+    def closeEvent(self, event):
+        event.ignore()
+
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
@@ -118,12 +134,16 @@ class Ui_MainWindow(object):
         self.maxMHum = 0
         self.minHHum = 0
         self.minMHum = 0
+        self.motor_sens = 1 # 1 -> positive  / 2 -> negative
+        self.voltage = 0
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
 
-        self.openSub()
-        self.sub.hide()
+        self.openTestCase1Window()
+        self.openTestCase2Window()
+        self.testCase1Window.hide()
+        self.testCase2Window.hide()
 
         self.MainWindow = MainWindow
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -153,6 +173,7 @@ class Ui_MainWindow(object):
         self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_2.setGeometry(QtCore.QRect(700, 140, 201, 41))
         self.checkBox_2.setObjectName("checkBox_2")
+        self.checkBox_2.stateChanged.connect(self.voltage_test_status)
 
         self.checkBox_3 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_3.setGeometry(QtCore.QRect(700, 200, 201, 41))
@@ -202,10 +223,12 @@ class Ui_MainWindow(object):
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(70, 200, 130, 40))
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.positive_click)
 
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_4.setGeometry(QtCore.QRect(240, 200, 130, 40))
         self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.clicked.connect(self.negative_click)
 
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setGeometry(QtCore.QRect(70, 270, 47, 13))
@@ -277,6 +300,13 @@ class Ui_MainWindow(object):
         if temp > max_temp or m_temp > max_temp:
             temperature_fail = True
 
+
+    def positive_click(self):
+        self.motor_sens = 1
+
+    def negative_click(self):
+        self.motor_sens = 2
+
     def recv_messages(self):
         self.stop_event = threading.Event()
         self.c_thread = threading.Thread(target=self.recv_messages_handler)
@@ -299,6 +329,13 @@ class Ui_MainWindow(object):
                             self.check_temp(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
                         except:
                             pass
+
+                    if self.test_case == 2:
+                        try:
+                            self.voltage = int(data)
+                        except:
+                            pass
+                        print(self.voltage)
                 except:
                     pass
 
@@ -317,6 +354,14 @@ class Ui_MainWindow(object):
         else:
             temperature_test = False
         print(temperature_test)
+
+    def voltage_test_status(self, state):
+        global voltage_test
+        if state == QtCore.Qt.Checked:
+            voltage_test = True
+        else:
+            voltage_test = False
+        print(voltage_test)
 
 
     def set_vars_to_zero(self):
@@ -340,7 +385,7 @@ class Ui_MainWindow(object):
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
         self.test_cases()
-        response = "S " + str(self.test_case) + " " + str(self.horizontalSlider.value())
+        response = "S " + str(self.motor_sens) + " " + str(self.test_case) + " " + str(self.horizontalSlider.value())
         self.send_bytes_to_client(response)
 
         start_test = True
@@ -371,7 +416,8 @@ class Ui_MainWindow(object):
         self.pushButton_2.setEnabled(False)
         self.send_bytes_to_client("X")
         self.timer.stop()
-        self.sub.hide()
+        self.testCase1Window.hide()
+        self.testCase2Window.hide()
         self.progressBar.setValue(0)
         start_test = False
 
@@ -379,9 +425,13 @@ class Ui_MainWindow(object):
         self.rpm = int((self.horizontalSlider.value() * 14000) / 255)
         self.textEdit.setPlainText(str(self.rpm))
 
-    def openSub(self):
-        self.sub = test1_Window()
-        self.sub.show()
+    def openTestCase1Window(self):
+        self.testCase1Window = test1_Window()
+        self.testCase1Window.show()
+
+    def openTestCase2Window(self):
+        self.testCase2Window = test2_Window()
+        self.testCase2Window.show()
 
     def check_temps(self, temp, hum, motor_temp, motor_hum):
         if temp > self.maxHTemp:
@@ -413,8 +463,11 @@ class Ui_MainWindow(object):
         self.check_temps(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
 
         if self.temp_box:
-            self.sub.edit_temps(self.temp, self.hum, self.motor_temp, self.motor_hum)
-            self.sub.show()
+            self.testCase1Window.edit_temps(self.temp, self.hum, self.motor_temp, self.motor_hum)
+            self.testCase1Window.show()
+
+        if self.voltage_box:
+            self.testCase2Window.show()
         if temperature_fail:
             self.textbox.setPlainText(
                 self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test FAILED! Temperature is greater than limit!")
