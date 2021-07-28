@@ -7,7 +7,9 @@
 #define PWM_MIN_DUTY      50
 #define PWM_START_DUTY    100
  
-byte bldc_step = 0, motor_speed, pin_state;
+byte motor_speed, pin_state;
+int bldc_step = 0;
+int sns = 1;
 
 void setup() {
   Serial.begin(115200);
@@ -190,16 +192,22 @@ void loop() {
   if (Serial.available()) 
   {
       String command = Serial.readStringUntil('+');
+      String sens = Serial.readStringUntil('+');
       String command_viteza = Serial.readStringUntil('\n');
+
       command.replace("b"," ");
       command.replace("'"," ");
       command_viteza.replace("b"," ");
       command_viteza.replace("'"," ");
       command.trim();
-      command_viteza.trim();
-      Serial.println(command);
-      Serial.println(command_viteza);
+      sens.trim();
+      command_viteza.trim();     
 
+      if( sens.equals("2"))
+        sns = -1;
+       else
+        sns = 1;
+      
       if (command.equals("START"))
       {
         Serial.println("Am intrat pe ramura de comanda manuala!");
@@ -210,8 +218,11 @@ void loop() {
         {
           delayMicroseconds(i);
           bldc_move();
-          bldc_step++;
+          bldc_step = bldc_step + sns;
           bldc_step %= 6;
+          if(bldc_step < 0)
+            bldc_step = 5;
+          Serial.println(bldc_step);
           i = i - 20;
         }
         motor_speed = PWM_START_DUTY;
