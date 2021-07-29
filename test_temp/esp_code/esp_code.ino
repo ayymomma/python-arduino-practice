@@ -1,19 +1,19 @@
 #include <DHT.h>  // Including library for dht 
 #include <ESP8266WiFi.h>
 
-//const char *ssid =  "DIGI-T53k";    
-//const char *pass =  "TF359U9k";
-const char *ssid = "ureche";
-const char *pass = "qwerty123";
+const char *ssid =  "DIGI-T53k";    
+const char *pass =  "TF359U9k";
+//const char *ssid = "ureche";
+//const char *pass = "qwerty123";
 
-//const uint16_t port = 50100;
-//const char *host = "192.168.100.44";
 const uint16_t port = 50100;
-const char *host = "192.168.43.198";
+const char *host = "192.168.100.44";
+// uint16_t port = 50100;
+//const char *host = "192.168.43.198";
 
 char test_case = '0';
-int voltage_value = 0;
- 
+float voltage_value = 0.0;
+String output = "";
 #define DHTPIN 2
 #define DHTPIN_MOTOR 14
 #define ANALOGPIN A0
@@ -54,30 +54,6 @@ void setup()
  
 void loop() 
 {
-  /*
-      float h = dht.readHumidity();
-      float t = dht.readTemperature();
-      
-      if (isnan(h) || isnan(t)) 
-         {
-             Serial.println("Failed to read from DHT sensor!");
-             delay(1000);
-             //return;
-         }
-      if( t > 0 )
-      {
-        Serial.print("Temperature: ");
-        Serial.print(t);
-        Serial.println();+
-        Serial.print("Humidity: ");
-        Serial.print(h);
-        Serial.println();
-        String temp = "";
-        temp.concat(t);
-        client.print(temp);
-      }
-   */      
-   
    if( client.available()){
      char input = client.read();
  
@@ -116,17 +92,13 @@ void loop()
         else{
           m = ' ';
         }
-
         String s1 = "b'START + ";
-
-        
         if(r != ' ')
           s2 = s2 + r;
         if(p != ' ')
           s2 = s2 + p;
         if(m != ' ')
           s2 = s2 + m;
-
         String s3 = "'";
         String s4 = " + ";
         Serial.println(s1 + motor_sens + s4 + s2 + s3);
@@ -138,36 +110,59 @@ void loop()
      }
 
    }
+   output = "";
 
 
    if(test_case == '1'){
-      float h = dht.readHumidity();
-      float t = dht.readTemperature();
-
-      float mh = dht_motor.readHumidity();
-      float mt = dht_motor.readTemperature();
-
-      /*if (isnan(h) || isnan(t) || isnan(mh) || isnan(mt)) 
-         {
-             client.print("Failed to read from DHT sensor!");
-             delay(1000);
-         }
-      else{*/
-        
-        String s1 = "T=";
-        String s2 = " ";
-        String s3 = "H=";
-        client.print(s1 + t + s2 + s3 + h + s2 + s1 + mt + s2 + s3 + mh);
-    // }
-      
+    temperature_test();
+    client.print(output);
    }
-
-
    if(test_case == '2'){
-       voltage_value = analogRead(ANALOGPIN);
-       client.print(voltage_value);
+     voltage_test();
+     client.print(output);
    }
-   
+   if(test_case == '3'){
+     speed_test();
+     client.print(output);
+   }
+   if(test_case == '4'){
+     temperature_test();
+     voltage_test();
+     client.print(output);
+   }
+   if(test_case == '5'){
+    voltage_test();
+    speed_test();
+    client.print(output);
+   }
+   if(test_case == '6'){
+    temperature_test();
+    voltage_test();
+    speed_test();
+    client.print(output);
+   }
    delay(1000);
  
+}
+
+void temperature_test(){
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
+    
+    float mh = dht_motor.readHumidity();
+    float mt = dht_motor.readTemperature();
+    
+    String s1 = "T=";
+    String s2 = " ";
+    String s3 = "H=";
+    output = output + "T=" + String(t,2) + " H=" + String(h,2) + " T=" + String(mt,2) + " H=" + String(mh,2) + " ";
+}
+
+void voltage_test(){
+    voltage_value = analogRead(ANALOGPIN);
+    output = output + String(voltage_value, 2) + " ";
+}
+
+void speed_test(){
+    output = output + "10000";
 }
