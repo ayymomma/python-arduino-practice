@@ -6,7 +6,8 @@ import os
 import threading
 import sys, time
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QPalette, QColor, QPixmap
 from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow
 from datetime import datetime
 
@@ -26,6 +27,7 @@ voltage_fail = False
 speed_fail = False
 
 max_temp = 30.00
+max_voltage = 10.00
 
 class test1_Window(QWidget):
     def __init__(self, parent = None):
@@ -79,6 +81,12 @@ class test1_Window(QWidget):
         self.lineEdit_4.setObjectName("lineEdit_4")
         self.lineEdit_4.setReadOnly(True)
 
+        self.lineEdit.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+        self.lineEdit_2.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+        self.lineEdit_3.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+        self.lineEdit_4.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+
+
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -106,15 +114,81 @@ class test2_Window(QWidget):
         self.setupUi()
 
     def setupUi(self):
-        pass
+        self.setObjectName("Test Case 2")
+        self.resize(278, 193)
+        self.label_2 = QtWidgets.QLabel(self)
+        self.label_2.setGeometry(QtCore.QRect(105, 10, 81, 16))
+        self.label_2.setObjectName("label_2")
+        self.line = QtWidgets.QFrame(self)
+        self.line.setGeometry(QtCore.QRect(0, 30, 291, 16))
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.label_3 = QtWidgets.QLabel(self)
+        self.label_3.setGeometry(QtCore.QRect(108, 70, 131, 20))
+        self.label_3.setObjectName("label_3")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self)
+        self.lineEdit_2.setGeometry(QtCore.QRect(90, 100, 101, 31))
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setReadOnly(True)
+        self.lineEdit_2.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
+
 
     def retranslateUi(self):
-        pass
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Form", "Test Case 2"))
+        self.label_2.setText(_translate("Form", "Voltage Test"))
+        self.label_3.setText(_translate("Form", "Supply Voltage"))
 
-    def edit_voltage(self):
-        pass
+    def edit_voltage(self, voltage):
+        self.lineEdit_2.setText(str(voltage))
     def closeEvent(self, event):
         event.ignore()
+
+
+class test3_Window(QWidget):
+    def __init__(self, parent=None):
+        super(test3_Window, self).__init__(parent)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setObjectName("Test Case 3")
+        self.resize(278, 193)
+        self.label_2 = QtWidgets.QLabel(self)
+        self.label_2.setGeometry(QtCore.QRect(90, 10, 71, 16))
+        self.label_2.setObjectName("label_2")
+        self.line = QtWidgets.QFrame(self)
+        self.line.setGeometry(QtCore.QRect(0, 30, 291, 16))
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.label = QtWidgets.QLabel(self)
+        self.label.setGeometry(QtCore.QRect(90, 50, 81, 20))
+        self.label.setObjectName("label")
+        self.lineEdit = QtWidgets.QLineEdit(self)
+        self.lineEdit.setGeometry(QtCore.QRect(70, 80, 111, 31))
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit.setReadOnly(True)
+        self.lineEdit.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Form", "Test Case 3"))
+        self.label_2.setText(_translate("Form", "Speed Test"))
+        self.label.setText(_translate("Form", "Motor Speed"))
+
+    def edit_speed(self, speed):
+        self.lineEdit.setText(str(speed))
+
+    def closeEvent(self, event):
+        event.ignore()
+
 
 class Ui_MainWindow(object):
 
@@ -126,28 +200,39 @@ class Ui_MainWindow(object):
         self.hum = 0
         self.motor_temp = 0
         self.motor_hum = 0
+        self.voltage = 0
+        self.speed = 0
         self.maxHTemp = 0
         self.maxMTemp = 0
-        self.minHTemp = 0
-        self.minMTemp = 0
+        self.minHTemp = 100
+        self.minMTemp = 100
         self.maxHHum = 0
         self.maxMHum = 0
-        self.minHHum = 0
-        self.minMHum = 0
+        self.minHHum = 100
+        self.minMHum = 100
         self.motor_sens = 1 # 1 -> positive  / 2 -> negative
-        self.voltage = 0
+        self.maxVoltage = 0
+        self.minVoltage = 100
+        self.maxSpeed = 0
+        self.minSpeed = 99999
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
 
         self.openTestCase1Window()
         self.openTestCase2Window()
-        self.testCase1Window.hide()
-        self.testCase2Window.hide()
+        self.openTestCase3Window()
 
         self.MainWindow = MainWindow
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        # Continental image
+        self.image_label = QtWidgets.QLabel(self.centralwidget)
+        self.image_label.setGeometry(QtCore.QRect(180, 400, 350, 120))
+        pixmap = QPixmap("conti.png")
+        pixmap = pixmap.scaled(350, 120, QtCore.Qt.KeepAspectRatio)
+        self.image_label.setPixmap(pixmap)
 
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(0, 550, 1281, 21))
@@ -178,6 +263,7 @@ class Ui_MainWindow(object):
         self.checkBox_3 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_3.setGeometry(QtCore.QRect(700, 200, 201, 41))
         self.checkBox_3.setObjectName("checkBox_3")
+        self.checkBox_3.stateChanged.connect(self.speed_test_status)
 
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setGeometry(QtCore.QRect(690, 390, 571, 23))
@@ -300,6 +386,11 @@ class Ui_MainWindow(object):
         if temp > max_temp or m_temp > max_temp:
             temperature_fail = True
 
+    def check_voltage(self, voltage):
+        global max_voltage, voltage_fail
+        if voltage > max_voltage:
+            voltage_fail = True
+
 
     def positive_click(self):
         self.motor_sens = 1
@@ -317,28 +408,54 @@ class Ui_MainWindow(object):
             if start_test:
                 data = self.conn.recv(1024)
                 data = data.decode()
-                print(data)
-                try:
-                    if self.test_case == 1:
-                        d_s = data.split(" ")
-                        self.temp = d_s[0].split("=")[1]
-                        self.hum = d_s[1].split("=")[1]
-                        self.motor_temp = d_s[2].split("=")[1]
-                        self.motor_hum = d_s[3].split("=")[1]
-                        try:
-                            self.check_temp(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
-                        except:
-                            pass
+                if self.test_case == 1:
+                    self.test_case_1(data)
+                if self.test_case == 2:
+                    self.test_case_2(data)
+                if self.test_case == 3:
+                    self.test_case_3(data)
+                if self.test_case == 4:
+                    self.test_case_1(data)
+                    self.test_case_2(data.split(" ")[4])
+                if self.test_case == 5:
+                    self.test_case_2(data.split(" ")[0])
+                    self.test_case_3(data.split(" ")[1])
+                if self.test_case == 6:
+                    self.test_case_1(data)
+                    self.test_case_2(data.split(" ")[4])
+                    self.test_case_3(data.split(" ")[5])
 
-                    if self.test_case == 2:
-                        try:
-                            self.voltage = int(data)
-                        except:
-                            pass
-                        print(self.voltage)
-                except:
-                    pass
+    def test_case_1(self, data):
+        d_s = data.split(" ")
+        self.temp = d_s[0].split("=")[1]
+        self.hum = d_s[1].split("=")[1]
+        self.motor_temp = d_s[2].split("=")[1]
+        self.motor_hum = d_s[3].split("=")[1]
+        try:
+            self.check_temp(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
+        except:
+            pass
 
+    def test_case_2(self, data):
+        self.voltage = float(data)
+        self.voltage = round(self.voltage / 20.83, 2)
+        print(self.voltage)
+        if self.voltage > self.maxVoltage:
+            self.maxVoltage = self.voltage
+        if self.voltage < self.minVoltage:
+            self.minVoltage = self.voltage
+
+        self.check_voltage(self.voltage)
+
+    def test_case_3(self, data):
+        try:
+            self.speed = float(data)
+            if self.speed > self.maxSpeed:
+                self.maxSpeed = self.speed
+            if self.speed < self.minSpeed:
+                self.minSpeed = self.speed
+        except:
+            pass
 
     def send_bytes_to_client(self, response):
         try:
@@ -363,16 +480,27 @@ class Ui_MainWindow(object):
             voltage_test = False
         print(voltage_test)
 
+    def speed_test_status(self, state):
+        global speed_test
+        if state == QtCore.Qt.Checked:
+            speed_test = True
+        else:
+            speed_test = False
+
 
     def set_vars_to_zero(self):
         self.maxHTemp = 0
         self.maxMTemp = 0
-        self.minHTemp = 0
-        self.minMTemp = 0
+        self.minHTemp = 100
+        self.minMTemp = 100
         self.maxHHum = 0
         self.maxMHum = 0
-        self.minHHum = 0
-        self.minMHum = 0
+        self.minHHum = 100
+        self.minMHum = 100
+        self.maxVoltage = 0
+        self.minVoltage = 100
+        self.maxSpeed = 0
+        self.minSpeed = 99999
 
     def start(self):
         global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test
@@ -394,6 +522,18 @@ class Ui_MainWindow(object):
         self.voltage_box = voltage_test
         self.speed_box = speed_test
 
+        if self.temp_box:
+            self.testCase1Window.setVisible(True)
+            self.testCase1Window.activateWindow()
+
+        if self.voltage_box:
+            self.testCase2Window.setVisible(True)
+            self.testCase2Window.activateWindow()
+
+        if self.speed_box:
+            self.testCase3Window.setVisible(True)
+            self.testCase3Window.activateWindow()
+
         self.counter = 0
         self.timer = QTimer()
         self.timer.setInterval(1000)
@@ -405,19 +545,35 @@ class Ui_MainWindow(object):
     def stop(self):
         global start_test
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp))
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum))
+        if temperature_test:
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum))
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp))
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
+
+        if voltage_test:
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Supply Voltage: " + str(self.maxVoltage))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Supply Voltage: " + str(self.minVoltage))
+
+        if speed_test:
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Speed: " + str(self.maxSpeed))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: " + str(self.minSpeed))
 
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!")
+
+
+
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(False)
         self.send_bytes_to_client("X")
         self.timer.stop()
-        self.testCase1Window.hide()
-        self.testCase2Window.hide()
+
+
+        self.testCase1Window.setVisible(False)
+        self.testCase2Window.setVisible(False)
+        self.testCase3Window.setVisible(False)
+
         self.progressBar.setValue(0)
         start_test = False
 
@@ -428,10 +584,17 @@ class Ui_MainWindow(object):
     def openTestCase1Window(self):
         self.testCase1Window = test1_Window()
         self.testCase1Window.show()
+        self.testCase1Window.setVisible(False)
 
     def openTestCase2Window(self):
         self.testCase2Window = test2_Window()
         self.testCase2Window.show()
+        self.testCase2Window.setVisible(False)
+
+    def openTestCase3Window(self):
+        self.testCase3Window = test3_Window()
+        self.testCase3Window.show()
+        self.testCase3Window.setVisible(False)
 
     def check_temps(self, temp, hum, motor_temp, motor_hum):
         if temp > self.maxHTemp:
@@ -456,7 +619,9 @@ class Ui_MainWindow(object):
         if motor_hum < self.minMHum:
            self.minMHum = motor_hum
 
+
     def start_test_counter(self):
+        global temperature_fail, speed_fail, voltage_fail
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
@@ -464,24 +629,38 @@ class Ui_MainWindow(object):
 
         if self.temp_box:
             self.testCase1Window.edit_temps(self.temp, self.hum, self.motor_temp, self.motor_hum)
-            self.testCase1Window.show()
 
         if self.voltage_box:
-            self.testCase2Window.show()
+            self.testCase2Window.edit_voltage(self.voltage)
+
+        if self.speed_box:
+            self.testCase3Window.edit_speed(self.speed)
+
+        if voltage_fail:
+            self.textbox.setPlainText(
+                self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
+                + "Test FAILED! Voltage is greater than limit!")
+            self.stop()
+
+
         if temperature_fail:
             self.textbox.setPlainText(
-                self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test FAILED! Temperature is greater than limit!")
+                self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
+                + "Test FAILED! Temperature is greater than limit!")
             self.stop()
+
         if self.counter > self.test_time:
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test SUCCEED!")
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Test SUCCEED!")
             self.stop()
+
 
     def test_cases(self):
         global temperature_test, voltage_test, speed_test
         if temperature_test:
             if voltage_test:
                 if speed_test:
-                    self.test_case = 7
+                    self.test_case = 6
                     return
                 self.test_case = 4
                 return
@@ -489,7 +668,7 @@ class Ui_MainWindow(object):
             return
         if voltage_test:
             if speed_test:
-                self.test_case = 6
+                self.test_case = 5
                 return
             self.test_case = 2
             return
@@ -503,9 +682,26 @@ def kill_proc_tree(pid, including_parent=True):
         parent.kill()
 
 
+
+palette = QPalette()
+palette.setColor(QPalette.Window, QColor(40, 40, 40))
+palette.setColor(QPalette.WindowText, QColor(200, 200, 200))
+palette.setColor(QPalette.Base, QColor(25, 25, 25))
+palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+palette.setColor(QPalette.ToolTipBase, Qt.black)
+palette.setColor(QPalette.ToolTipText, QColor(200, 200, 200))
+palette.setColor(QPalette.Text, QColor(200, 200, 200))
+palette.setColor(QPalette.Button, QColor(53, 53, 53))
+palette.setColor(QPalette.ButtonText, Qt.black)
+palette.setColor(QPalette.BrightText, Qt.red)
+palette.setColor(QPalette.Link, QColor(42, 130, 218))
+palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+palette.setColor(QPalette.HighlightedText, Qt.black)
+
 def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    app.setPalette(palette)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
