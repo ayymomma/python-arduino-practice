@@ -22,12 +22,13 @@ temperature_test = False
 voltage_test = False
 speed_test = False
 
+# ERROR FLAGS
 temperature_fail = False
 voltage_fail = False
 speed_fail = False
 
-max_temp = 30.00
-max_voltage = 10.00
+max_temp = 28.00
+max_voltage = 15.00
 
 class test1_Window(QWidget):
     def __init__(self, parent = None):
@@ -219,6 +220,9 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
 
+        scriptDir = os.path.dirname(os.path.realpath(__file__))
+        MainWindow.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + "icon.png"))
+
         self.openTestCase1Window()
         self.openTestCase2Window()
         self.openTestCase3Window()
@@ -274,12 +278,32 @@ class Ui_MainWindow(object):
         self.pushButton.setGeometry(QtCore.QRect(770, 480, 130, 40))
         self.pushButton.setObjectName("pushButton")
         self.pushButton.clicked.connect(self.start)
+        self.pushButton.setStyleSheet("""QPushButton {
+                                    border-width: 1px;
+                                    padding: 1px;
+                                    border-style: solid;
+                                    border-radius:10px;
+                                    background: qlineargradient(
+                                        x1:0, y1:0, x2:1, y2:1,
+                                        stop: 0.01 orange, stop: 0.8 rgb(255,140,0), stop:0 white
+                                    )
+                                    }""")
 
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(1020, 480, 130, 40))
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton_2.setEnabled(False)
         self.pushButton_2.clicked.connect(self.stop)
+        self.pushButton_2.setStyleSheet("""QPushButton {
+                                            border-width: 1px;
+                                            padding: 1px;
+                                            border-style: solid;
+                                            border-radius:10px;
+                                            background: qlineargradient(
+                                                x1:0, y1:0, x2:1, y2:1,
+                                                stop: 0.01 orange, stop: 0.8 rgb(255,140,0), stop:0 white
+                                            )
+                                            }""")
 
         self.textbox = QTextEdit(self.centralwidget)
         self.textbox.move(10, 570)
@@ -310,11 +334,31 @@ class Ui_MainWindow(object):
         self.pushButton_3.setGeometry(QtCore.QRect(70, 200, 130, 40))
         self.pushButton_3.setObjectName("pushButton_3")
         self.pushButton_3.clicked.connect(self.positive_click)
+        self.pushButton_3.setStyleSheet("""QPushButton {
+                                            border-width: 1px;
+                                            padding: 1px;
+                                            border-style: solid;
+                                            border-radius:10px;
+                                            background: qlineargradient(
+                                                x1:0, y1:0, x2:1, y2:1,
+                                                stop: 0.01 orange, stop: 0.8 rgb(255,140,0), stop:0 white
+                                            )
+                                            }""")
 
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_4.setGeometry(QtCore.QRect(240, 200, 130, 40))
         self.pushButton_4.setObjectName("pushButton_4")
         self.pushButton_4.clicked.connect(self.negative_click)
+        self.pushButton_4.setStyleSheet("""QPushButton {
+                                            border-width: 1px;
+                                            padding: 1px;
+                                            border-style: solid;
+                                            border-radius:10px;
+                                            background: qlineargradient(
+                                                x1:0, y1:0, x2:1, y2:1,
+                                                stop: 0.01 orange, stop: 0.8 rgb(255,140,0), stop:0 white
+                                            )
+                                            }""")
 
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setGeometry(QtCore.QRect(70, 270, 47, 13))
@@ -324,6 +368,28 @@ class Ui_MainWindow(object):
         self.textEdit.setGeometry(QtCore.QRect(70, 290, 81, 31))
         self.textEdit.setObjectName("textEdit")
         self.textEdit.setReadOnly(True)
+        self.textEdit.setStyleSheet(""" QTextEdit{
+                                    border-width: 1px;
+                                    padding: 1px;
+                                    border-style: solid;
+                                    border-radius: 10px
+                                    }""")
+
+
+        self.label_temp = QtWidgets.QLabel(self.centralwidget)
+        self.label_temp.setGeometry(QtCore.QRect(705, 260, 120, 31))
+        self.label_temp.setObjectName("label")
+        self.label_temp.setText("Maximum Temperature")
+
+        self.textEditTemperature = QTextEdit(self.centralwidget)
+        self.textEditTemperature.setGeometry(QtCore.QRect(705, 290, 81, 31))
+        self.textEditTemperature.setObjectName("textEditTemperature")
+        self.textEditTemperature.setStyleSheet("""QTextEdit{
+                                    border-width: 1px;
+                                    padding: 1px;
+                                    border-style: solid;
+                                    border-radius: 10px
+                                    }""")
 
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -353,7 +419,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Wifi Test Framework"))
         self.checkBox.setText(_translate("MainWindow", "Temperature test ( H Bridge, Motor )"))
         self.label.setText(_translate("MainWindow", "Test cases:"))
         self.checkBox_2.setText(_translate("MainWindow", "Voltage test (  Supply )"))
@@ -438,7 +504,7 @@ class Ui_MainWindow(object):
 
     def test_case_2(self, data):
         self.voltage = float(data)
-        self.voltage = round(self.voltage / 20.83, 2)
+        self.voltage = round(self.voltage / 21.99, 2)
         print(self.voltage)
         if self.voltage > self.maxVoltage:
             self.maxVoltage = self.voltage
@@ -503,11 +569,16 @@ class Ui_MainWindow(object):
         self.minSpeed = 99999
 
     def start(self):
-        global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test
+        global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test, max_temp
         temperature_fail = False
         voltage_fail = False
         speed_fail = False
         self.set_vars_to_zero()
+
+        try:
+            max_temp = float(self.textEditTemperature.toPlainText())
+        except:
+            max_temp = 0
 
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test started!")
         self.pushButton.setEnabled(False)
