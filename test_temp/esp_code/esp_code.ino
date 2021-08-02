@@ -1,15 +1,15 @@
 #include <DHT.h>  // Including library for dht 
 #include <ESP8266WiFi.h>
 
-const char *ssid =  "DIGI-T53k";    
-const char *pass =  "TF359U9k";
-//const char *ssid = "ureche";
-//const char *pass = "qwerty123";
+//const char *ssid =  "DIGI-T53k";    
+//const char *pass =  "TF359U9k";
+const char *ssid = "ureche";
+const char *pass = "qwerty123";
 
-const uint16_t port = 50100;
-const char *host = "192.168.100.44";
-// uint16_t port = 50100;
-//const char *host = "192.168.43.198";
+//const uint16_t port = 50100;
+//const char *host = "192.168.100.44";
+uint16_t port = 50100;
+const char *host = "192.168.43.198";
 
 char test_case = '0';
 float voltage_value = 0.0;
@@ -17,7 +17,16 @@ String output = "";
 #define DHTPIN 2
 #define DHTPIN_MOTOR 14
 #define ANALOGPIN A0
-     
+#define REDLED 16
+#define GREENLED 0
+#define ECHOPIN 15
+#define TRIGPIN 13
+#define SOUND_VELOCITY 0.034
+
+long duration;
+float distanceCm;
+float maxDistance = 20.0;
+
 DHT dht(DHTPIN, DHT11);
 DHT dht_motor(DHTPIN_MOTOR, DHT11);
  
@@ -29,6 +38,14 @@ void setup()
       delay(10);
       dht.begin();
       dht_motor.begin();
+
+      pinMode(TRIGPIN, OUTPUT);
+      pinMode(ECHOPIN, INPUT);
+
+      pinMode(REDLED, OUTPUT);
+      pinMode(GREENLED, OUTPUT);
+      digitalWrite(REDLED, LOW);
+      digitalWrite(GREENLED, LOW);
       
       Serial.println("Connecting to ");
       Serial.println(ssid);
@@ -58,6 +75,8 @@ void loop()
      char input = client.read();
  
      if( input == 'S' ){
+        digitalWrite(REDLED, LOW);
+        digitalWrite(GREENLED, HIGH);
         char r;
         char p;
         char m;
@@ -105,8 +124,7 @@ void loop()
      }
      if( input == 'X' )
      {
-        Serial.println("b'STOP'");
-        test_case = '0';
+        stop_test();
      }
 
    }
@@ -141,8 +159,35 @@ void loop()
     speed_test();
     client.print(output);
    }
+
+   if(test_case != '0')
+   {
+        digitalWrite(TRIGPIN, LOW);
+        delayMicroseconds(2); 
+        
+        digitalWrite(TRIGPIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(TRIGPIN, LOW);
+        
+        duration = pulseIn(ECHOPIN, HIGH);
+        
+        distanceCm = duration * SOUND_VELOCITY/2;
+    
+        Serial.print("Distance (cm): ");
+        Serial.println(distanceCm);
+
+        if(distanceCm < maxDistance){
+          stop_test();
+        }
+   }
    delay(1000);
  
+}
+void stop_test(){
+    digitalWrite(GREENLED, LOW);
+    digitalWrite(REDLED, HIGH);
+    Serial.println("b'STOP'");
+    test_case = '0';
 }
 
 void temperature_test(){
