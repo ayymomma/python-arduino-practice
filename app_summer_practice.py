@@ -10,6 +10,12 @@ from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QPalette, QColor, QPixmap
 from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow
 from datetime import datetime
+from itertools import count
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+plt.style.use('fivethirtyeight')
 
 # SERVER IP and HOST
 HOST = '0.0.0.0'
@@ -29,6 +35,10 @@ speed_fail = False
 
 max_temp = 28.00
 max_voltage = 15.00
+
+dt = datetime.now()
+logfile = 'Log-%s-%s-%s.csv' % (dt.year, dt.month, dt.day)
+file = open("Logs/" + logfile, 'a+')
 
 class test1_Window(QWidget):
     def __init__(self, parent = None):
@@ -217,11 +227,15 @@ class Ui_MainWindow(object):
         self.maxSpeed = 0
         self.minSpeed = 99999
 
+
+
+        self.cnt = 0
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
 
         scriptDir = os.path.dirname(os.path.realpath(__file__))
-        MainWindow.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + "icon.png"))
+        MainWindow.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + "Images" + os.path.sep +"icon.png"))
 
         self.openTestCase1Window()
         self.openTestCase2Window()
@@ -234,7 +248,7 @@ class Ui_MainWindow(object):
         # Continental image
         self.image_label = QtWidgets.QLabel(self.centralwidget)
         self.image_label.setGeometry(QtCore.QRect(180, 400, 350, 120))
-        pixmap = QPixmap("conti.png")
+        pixmap = QPixmap("Images" + os.path.sep + "conti.png")
         pixmap = pixmap.scaled(350, 120, QtCore.Qt.KeepAspectRatio)
         self.image_label.setPixmap(pixmap)
 
@@ -460,6 +474,7 @@ class Ui_MainWindow(object):
 
     def positive_click(self):
         self.motor_sens = 1
+        self.start_graph()
 
     def negative_click(self):
         self.motor_sens = 2
@@ -490,6 +505,8 @@ class Ui_MainWindow(object):
                     self.test_case_1(data)
                     self.test_case_2(data.split(" ")[4])
                     self.test_case_3(data.split(" ")[5])
+
+
 
     def test_case_1(self, data):
         d_s = data.split(" ")
@@ -575,12 +592,16 @@ class Ui_MainWindow(object):
         speed_fail = False
         self.set_vars_to_zero()
 
+
+
+
         try:
             max_temp = float(self.textEditTemperature.toPlainText())
         except:
             max_temp = 0
 
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test started!")
+        file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test started!" + "\n")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
         self.test_cases()
@@ -619,19 +640,29 @@ class Ui_MainWindow(object):
         if temperature_test:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp))
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum))
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp) + "\n")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum) + "\n")
 
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp))
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp) + "\n")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
+
 
         if voltage_test:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Supply Voltage: " + str(self.maxVoltage))
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Supply Voltage: " + str(self.minVoltage))
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Supply Voltage: " + str(self.maxVoltage) + "\n")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Supply Voltage: " + str(self.minVoltage) + "\n")
 
         if speed_test:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Speed: " + str(self.maxSpeed))
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: " + str(self.minSpeed))
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Speed: " + str(self.maxSpeed) + "\n")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: " + str(self.minSpeed) + "\n")
 
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!")
+        file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!" + "\n")
 
 
 
@@ -711,6 +742,9 @@ class Ui_MainWindow(object):
             self.textbox.setPlainText(
                 self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
                 + "Test FAILED! Voltage is greater than limit!")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
+                + "Test FAILED! Voltage is greater than limit!" + "\n")
+
             self.stop()
 
 
@@ -718,11 +752,15 @@ class Ui_MainWindow(object):
             self.textbox.setPlainText(
                 self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
                 + "Test FAILED! Temperature is greater than limit!")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
+                + "Test FAILED! Temperature is greater than limit!" + "\n")
             self.stop()
 
         if self.counter > self.test_time:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                       + ": " + "Test SUCCEED!")
+            file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Test SUCCEED!" + "\n")
             self.stop()
 
 
