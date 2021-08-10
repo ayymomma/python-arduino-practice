@@ -1,3 +1,6 @@
+import random
+
+import matplotlib
 import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
@@ -5,11 +8,20 @@ import _pickle as cPickle
 import os
 import threading
 import sys, time
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_template import FigureCanvas
+from matplotlib.figure import Figure
+matplotlib.use('QT5Agg')
+plt.ion()
 
-from PyQt5.QtCore import QTimer, Qt
+
+
+from PyQt5.QtCore import QTimer, Qt, QThread
 from PyQt5.QtGui import QPalette, QColor, QPixmap
-from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow
+from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow, QVBoxLayout
 from datetime import datetime
+from drawnow import *
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
 
 # SERVER IP and HOST
 HOST = '0.0.0.0'
@@ -28,7 +40,7 @@ voltage_fail = False
 speed_fail = False
 
 max_temp = 28.00
-max_voltage = 15.00
+max_voltage = 50.00
 
 
 
@@ -192,6 +204,46 @@ class test3_Window(QWidget):
     def closeEvent(self, event):
         event.ignore()
 
+temperature = 0
+
+class MplCanvas(Canvas):
+    def __init__(self):
+        self.fig = Figure()
+        self.axes = self.fig.add_subplot(111)
+        Canvas.__init__(self, self.fig)
+        Canvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        Canvas.updateGeometry(self)
+
+class GraphWindow(QWidget):
+
+    def __init__(self, parent=None):
+        super(GraphWindow, self).__init__(parent)
+
+        self.canvas = MplCanvas()  # Create canvas object
+        self.vbl = QtWidgets.QVBoxLayout()  # Set box for plotting
+        self.vbl.addWidget(self.canvas)
+        self.setLayout(self.vbl)
+
+        self.n_data = 50
+        self.xdata = list(range(self.n_data))
+        self.ydata = [0] * 50
+        self.update_plot()
+
+        self.show()
+
+        # Setup a timer to trigger the redraw by calling update_plot.
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(500)
+        self.timer.timeout.connect(self.update_plot)
+        self.timer.start()
+
+    def update_plot(self):
+        self.ydata = self.ydata[1:] + [temperature]
+        self.xdata = list(range(len(self.ydata)))
+        self.canvas.axes.cla()  # Clear the canvas.
+        self.canvas.axes.plot(self.xdata, self.ydata, 'r')
+        # Trigger the canvas to update and redraw.
+        self.canvas.draw()
 
 class Ui_MainWindow(object):
 
@@ -218,10 +270,10 @@ class Ui_MainWindow(object):
         self.minVoltage = 100
         self.maxSpeed = 0
         self.minSpeed = 99999
-
-
-
+        self.bridgeTemp = []
+        self.voltageV = []
         self.cnt = 0
+        self.distance = 100
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
@@ -232,6 +284,7 @@ class Ui_MainWindow(object):
         self.openTestCase1Window()
         self.openTestCase2Window()
         self.openTestCase3Window()
+        self.openGraphWindow()
 
         self.MainWindow = MainWindow
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -479,21 +532,27 @@ class Ui_MainWindow(object):
     def recv_messages_handler(self):
         while True:
             if start_test:
+                flag = True
                 data = self.conn.recv(1024)
                 data = data.decode()
-                if self.test_case == 1:
+                print(data)
+                data_split = data.split(" ")
+                if data_split[0] == "STOP":
+                    self.distance = float(data_split[1])
+                    flag = False
+                if self.test_case == 1 and flag:
                     self.test_case_1(data)
-                if self.test_case == 2:
+                if self.test_case == 2 and flag:
                     self.test_case_2(data)
-                if self.test_case == 3:
+                if self.test_case == 3 and flag:
                     self.test_case_3(data)
-                if self.test_case == 4:
+                if self.test_case == 4 and flag:
                     self.test_case_1(data)
                     self.test_case_2(data.split(" ")[4])
-                if self.test_case == 5:
+                if self.test_case == 5 and flag:
                     self.test_case_2(data.split(" ")[0])
                     self.test_case_3(data.split(" ")[1])
-                if self.test_case == 6:
+                if self.test_case == 6 and flag:
                     self.test_case_1(data)
                     self.test_case_2(data.split(" ")[4])
                     self.test_case_3(data.split(" ")[5])
@@ -501,15 +560,18 @@ class Ui_MainWindow(object):
 
 
     def test_case_1(self, data):
+        global temperature
         d_s = data.split(" ")
         self.temp = d_s[0].split("=")[1]
         self.hum = d_s[1].split("=")[1]
         self.motor_temp = d_s[2].split("=")[1]
         self.motor_hum = d_s[3].split("=")[1]
+        self.bridgeTemp.append(self.motor_temp)
         try:
             self.check_temp(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
         except:
             pass
+        temperature = self.temp
 
     def test_case_2(self, data):
         self.voltage = float(data)
@@ -520,6 +582,7 @@ class Ui_MainWindow(object):
         if self.voltage < self.minVoltage:
             self.minVoltage = self.voltage
 
+        self.voltageV.append(self.voltage)
         self.check_voltage(self.voltage)
 
     def test_case_3(self, data):
@@ -576,6 +639,31 @@ class Ui_MainWindow(object):
         self.minVoltage = 100
         self.maxSpeed = 0
         self.minSpeed = 99999
+        self.cnt = 0
+        self.distance = 100
+
+
+    def makeFig(self):
+        plt.figure()
+        plt.ylim(0,30)
+        plt.title("Live Graph")
+        plt.grid(True)
+        plt.ylabel("Temp C / Voltage V")
+        plt.plot(self.bridgeTemp, 'ro-', label='HBridge Degrees C')
+        plt.legend(loc='upper left')
+        plt2=plt.twinx()
+        plt2.plot(self.voltageV, 'b^-', label='Voltage V')
+        plt2.ticklabel_format(useOffset=False)
+        plt2.legend(loc='upper right')
+
+    def start_plot(self):
+        while start_test:
+            drawnow(self.makeFig)
+            plt.pause(.000001)
+            self.cnt += 1
+            if self.cnt > 50:
+                self.voltageV.pop(0)
+                self.bridgeTemp.pop(0)
 
     def start(self):
         global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test, max_temp
@@ -583,11 +671,9 @@ class Ui_MainWindow(object):
         voltage_fail = False
         speed_fail = False
         self.set_vars_to_zero()
-
         dt = datetime.now()
         logfile = 'Log-%s-%s-%s.csv' % (dt.year, dt.month, dt.day)
         self.file = open("Logs/" + logfile, 'a')
-
 
         try:
             max_temp = float(self.textEditTemperature.toPlainText())
@@ -620,6 +706,9 @@ class Ui_MainWindow(object):
             self.testCase3Window.setVisible(True)
             self.testCase3Window.activateWindow()
 
+        self.graphWindow.setVisible(True)
+        self.graphWindow.activateWindow()
+
         self.counter = 0
         self.timer = QTimer()
         self.timer.setInterval(1000)
@@ -631,31 +720,51 @@ class Ui_MainWindow(object):
     def stop(self):
         global start_test
 
-        if temperature_test:
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp))
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum))
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp) + "\n")
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum) + "\n")
 
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp))
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp) + "\n")
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
+
+        if temperature_test:
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Maximum H Bridge Temperature: " + str(self.maxHTemp))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Maximum H Bridge Humidity: " + str(self.maxHHum))
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Temperature: "
+                            + str(self.maxHTemp) + "\n")
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum H Bridge Humidity: "
+                            + str(self.maxHHum) + "\n")
+
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Maximum Motor Temperature: " + str(self.maxMTemp))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Maximum Motor Humidity: " + str(self.maxMHum))
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Temperature: "
+                            + str(self.maxMTemp) + "\n")
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: "
+                            + str(self.maxMHum) + "\n")
 
 
         if voltage_test:
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Supply Voltage: " + str(self.maxVoltage))
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Supply Voltage: " + str(self.minVoltage))
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Supply Voltage: " + str(self.maxVoltage) + "\n")
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Supply Voltage: " + str(self.minVoltage) + "\n")
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Maximum Supply Voltage: " + str(self.maxVoltage))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Minimum Supply Voltage: " + str(self.minVoltage))
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Supply Voltage: "
+                            + str(self.maxVoltage) + "\n")
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Supply Voltage: "
+                            + str(self.minVoltage) + "\n")
 
         if speed_test:
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Speed: " + str(self.maxSpeed))
-            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: " + str(self.minSpeed))
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Speed: " + str(self.maxSpeed) + "\n")
-            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: " + str(self.minSpeed) + "\n")
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Maximum Speed: " + str(self.maxSpeed))
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Minimum Speed: " + str(self.minSpeed))
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Speed: "
+                            + str(self.maxSpeed) + "\n")
+            self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: "
+                            + str(self.minSpeed) + "\n")
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!")
+
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                  + ": " + "Test stopped!")
         self.file.write("\n" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!" + "\n")
 
 
@@ -669,6 +778,7 @@ class Ui_MainWindow(object):
         self.testCase1Window.setVisible(False)
         self.testCase2Window.setVisible(False)
         self.testCase3Window.setVisible(False)
+        self.graphWindow.setVisible(False)
 
         self.progressBar.setValue(0)
         self.file.close()
@@ -692,6 +802,11 @@ class Ui_MainWindow(object):
         self.testCase3Window = test3_Window()
         self.testCase3Window.show()
         self.testCase3Window.setVisible(False)
+
+    def openGraphWindow(self):
+        self.graphWindow = GraphWindow()
+        self.graphWindow.show()
+        self.graphWindow.setVisible(False)
 
     def check_temps(self, temp, hum, motor_temp, motor_hum):
         if temp > self.maxHTemp:
@@ -723,7 +838,7 @@ class Ui_MainWindow(object):
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
         self.check_temps(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
-
+        #self.start_plot()
         if self.temp_box:
             self.testCase1Window.edit_temps(self.temp, self.hum, self.motor_temp, self.motor_hum)
 
@@ -761,6 +876,17 @@ class Ui_MainWindow(object):
                                       + ": " + "Test SUCCEED!")
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                       + ": " + "Test SUCCEED!" + "\n")
+            self.stop()
+
+        if self.distance < 20.0:
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Distance from motor lower than limit! ")
+            self.file.write('\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                            + ": " + "Distance from motor lower than limit! " + "\n")
+            self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                      + ": " + "Distance:" + str(self.distance))
+            self.file.write('\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                            + ": " + "Distance:" + str(self.distance))
             self.stop()
 
 
@@ -823,3 +949,4 @@ if __name__ == "__main__":
 
 me = os.getpid()
 kill_proc_tree(me)
+
