@@ -1,0 +1,14 @@
+
+04/08/2021 01:40:09: Test started!
+04/08/2021 01:40:27: Maximum H Bridge Temperature: 25.1
+04/08/2021 01:40:27: Maximum H Bridge Humidity: 75.0
+04/08/2021 01:40:27: Maximum Motor Temperature: 25.8
+04/08/2021 01:40:27: Maximum Motor Humidity: 71.0
+04/08/2021 01:40:27: Test stopped!
+04/08/2021 01:40:50: Test started!
+04/08/2021 01:40:51: Test FAILED! Temperature is greater than limit!
+04/08/2021 01:40:51: Maximum H Bridge Temperature: 25.0
+04/08/2021 01:40:51: Maximum H Bridge Humidity: 78.0
+04/08/2021 01:40:51: Maximum Motor Temperature: 25.8
+04/08/2021 01:40:51: Maximum Motor Humidity: 71.0
+04/08/2021 01:40:51: Test stopped!
