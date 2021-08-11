@@ -1,21 +1,14 @@
-import random
 
-import matplotlib
 import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
-import _pickle as cPickle
 import os
 import threading
-import sys, time
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_template import FigureCanvas
 from matplotlib.figure import Figure
-matplotlib.use('QT5Agg')
-plt.ion()
+import matplotlib
+matplotlib.use('Qt5Agg')
 
-
-
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtCore import QTimer, Qt, QThread
 from PyQt5.QtGui import QPalette, QColor, QPixmap
 from PyQt5.QtWidgets import QTextEdit, QDialog, QLabel, QWidget, QMessageBox, QMainWindow, QVBoxLayout
@@ -38,6 +31,7 @@ speed_test = False
 temperature_fail = False
 voltage_fail = False
 speed_fail = False
+distance_fail = False
 
 max_temp = 28.00
 max_voltage = 50.00
@@ -205,6 +199,7 @@ class test3_Window(QWidget):
         event.ignore()
 
 temperature = 0
+voltage = 0
 
 class MplCanvas(Canvas):
     def __init__(self):
@@ -221,29 +216,40 @@ class GraphWindow(QWidget):
 
         self.canvas = MplCanvas()  # Create canvas object
         self.vbl = QtWidgets.QVBoxLayout()  # Set box for plotting
+        self.navi_toolbar = NavigationToolbar(self.canvas, self)
+
         self.vbl.addWidget(self.canvas)
+        self.vbl.addWidget(self.navi_toolbar)
         self.setLayout(self.vbl)
 
-        self.n_data = 50
+        self.n_data = 60
         self.xdata = list(range(self.n_data))
-        self.ydata = [0] * 50
+        self.temperatureData = [temperature] * self.n_data
+        self.voltageData = [voltage] * self.n_data
         self.update_plot()
 
         self.show()
-
         # Setup a timer to trigger the redraw by calling update_plot.
+
+    def start_timer(self):
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
         self.timer.timeout.connect(self.update_plot)
         self.timer.start()
 
     def update_plot(self):
-        self.ydata = self.ydata[1:] + [temperature]
-        self.xdata = list(range(len(self.ydata)))
+        self.temperatureData = self.temperatureData[1:] + [temperature]
+        self.voltageData = self.voltageData[1:] + [voltage]
+        self.xdata = list(range(len(self.temperatureData)))
         self.canvas.axes.cla()  # Clear the canvas.
-        self.canvas.axes.plot(self.xdata, self.ydata, 'r')
+        self.canvas.axes.plot(self.xdata, self.voltageData, 'b', label='Voltage  (V)')
+        self.canvas.axes.plot(self.xdata, self.temperatureData, 'r', label='Temperature (C)')
+        self.canvas.axes.legend()
         # Trigger the canvas to update and redraw.
         self.canvas.draw()
+
+    def stop_plot(self):
+        self.timer.stop()
 
 class Ui_MainWindow(object):
 
@@ -574,9 +580,11 @@ class Ui_MainWindow(object):
         temperature = self.temp
 
     def test_case_2(self, data):
+        global voltage
         self.voltage = float(data)
         self.voltage = round(self.voltage / 21.99, 2)
         print(self.voltage)
+        voltage = self.voltage
         if self.voltage > self.maxVoltage:
             self.maxVoltage = self.voltage
         if self.voltage < self.minVoltage:
@@ -584,6 +592,7 @@ class Ui_MainWindow(object):
 
         self.voltageV.append(self.voltage)
         self.check_voltage(self.voltage)
+
 
     def test_case_3(self, data):
         try:
@@ -642,34 +651,15 @@ class Ui_MainWindow(object):
         self.cnt = 0
         self.distance = 100
 
-
-    def makeFig(self):
-        plt.figure()
-        plt.ylim(0,30)
-        plt.title("Live Graph")
-        plt.grid(True)
-        plt.ylabel("Temp C / Voltage V")
-        plt.plot(self.bridgeTemp, 'ro-', label='HBridge Degrees C')
-        plt.legend(loc='upper left')
-        plt2=plt.twinx()
-        plt2.plot(self.voltageV, 'b^-', label='Voltage V')
-        plt2.ticklabel_format(useOffset=False)
-        plt2.legend(loc='upper right')
-
-    def start_plot(self):
-        while start_test:
-            drawnow(self.makeFig)
-            plt.pause(.000001)
-            self.cnt += 1
-            if self.cnt > 50:
-                self.voltageV.pop(0)
-                self.bridgeTemp.pop(0)
-
     def start(self):
-        global start_test, temperature_fail, voltage_fail, speed_fail, temperature_test, voltage_test, speed_test, max_temp
+        global start_test, temperature_fail, voltage_fail, speed_fail, distance_fail, \
+            temperature_test, voltage_test, speed_test, max_temp
+
         temperature_fail = False
         voltage_fail = False
         speed_fail = False
+        distance_fail = False
+
         self.set_vars_to_zero()
         dt = datetime.now()
         logfile = 'Log-%s-%s-%s.csv' % (dt.year, dt.month, dt.day)
@@ -680,7 +670,8 @@ class Ui_MainWindow(object):
         except:
             max_temp = 0
 
-        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test started!")
+        self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                  + ": " + "Test started!")
         self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test started!" + "\n")
         self.pushButton.setEnabled(False)
         self.pushButton_2.setEnabled(True)
@@ -706,6 +697,7 @@ class Ui_MainWindow(object):
             self.testCase3Window.setVisible(True)
             self.testCase3Window.activateWindow()
 
+        self.graphWindow.start_timer()
         self.graphWindow.setVisible(True)
         self.graphWindow.activateWindow()
 
@@ -714,6 +706,7 @@ class Ui_MainWindow(object):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.start_test_counter)
         self.timer.start()
+
 
         threading.Thread(target=self.start_test_counter).start()
 
@@ -778,7 +771,8 @@ class Ui_MainWindow(object):
         self.testCase1Window.setVisible(False)
         self.testCase2Window.setVisible(False)
         self.testCase3Window.setVisible(False)
-        self.graphWindow.setVisible(False)
+        #self.graphWindow.setVisible(False)
+        self.graphWindow.stop_plot()
 
         self.progressBar.setValue(0)
         self.file.close()
@@ -833,7 +827,7 @@ class Ui_MainWindow(object):
 
 
     def start_test_counter(self):
-        global temperature_fail, speed_fail, voltage_fail
+        global temperature_fail, speed_fail, voltage_fail, distance_fail
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
@@ -878,7 +872,8 @@ class Ui_MainWindow(object):
                                       + ": " + "Test SUCCEED!" + "\n")
             self.stop()
 
-        if self.distance < 20.0:
+        if self.distance < 0.0:
+            distance_fail = True
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                       + ": " + "Distance from motor lower than limit! ")
             self.file.write('\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
