@@ -35,7 +35,8 @@ distance_fail = False
 
 max_temp = 28.00
 max_voltage = 50.00
-
+temperature = 0
+voltage = 0
 
 
 class test1_Window(QWidget):
@@ -197,9 +198,6 @@ class test3_Window(QWidget):
 
     def closeEvent(self, event):
         event.ignore()
-
-temperature = 0
-voltage = 0
 
 class MplCanvas(Canvas):
     def __init__(self):
