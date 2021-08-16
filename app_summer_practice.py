@@ -118,6 +118,7 @@ class test1_Window(QWidget):
     def closeEvent(self, event):
         event.ignore()
 
+
 class test2_Window(QWidget):
     def __init__(self, parent = None):
         super(test2_Window, self).__init__(parent)
@@ -165,39 +166,123 @@ class test3_Window(QWidget):
         self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("Test Case 3")
-        self.resize(278, 193)
-        self.label_2 = QtWidgets.QLabel(self)
-        self.label_2.setGeometry(QtCore.QRect(90, 10, 71, 16))
-        self.label_2.setObjectName("label_2")
+        self.setObjectName("Form")
+        self.resize(1024, 768)
+        self.setStyleSheet("background-color: rgb(56, 56, 56);")
         self.line = QtWidgets.QFrame(self)
-        self.line.setGeometry(QtCore.QRect(0, 30, 291, 16))
+        self.line.setGeometry(QtCore.QRect(0, 60, 1081, 16))
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
-        self.label = QtWidgets.QLabel(self)
-        self.label.setGeometry(QtCore.QRect(90, 50, 81, 20))
-        self.label.setObjectName("label")
+        self.line_2 = QtWidgets.QFrame(self)
+        self.line_2.setGeometry(QtCore.QRect(470, 0, 20, 721))
+        self.line_2.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_2.setObjectName("line_2")
+        self.line_3 = QtWidgets.QFrame(self)
+        self.line_3.setGeometry(QtCore.QRect(250, 0, 20, 731))
+        self.line_3.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
         self.lineEdit = QtWidgets.QLineEdit(self)
-        self.lineEdit.setGeometry(QtCore.QRect(70, 80, 111, 31))
+        self.lineEdit.setGeometry(QtCore.QRect(60, 11, 121, 41))
+        self.lineEdit.setStyleSheet("background-color: rgb(255, 140, 0);")
         self.lineEdit.setObjectName("lineEdit")
-        self.lineEdit.setReadOnly(True)
-        self.lineEdit.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self)
+        self.lineEdit_2.setGeometry(QtCore.QRect(300, 10, 121, 41))
+        self.lineEdit_2.setStyleSheet("background-color: rgb(255, 140, 0);")
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.label = QtWidgets.QLabel(self)
+        self.label.setGeometry(QtCore.QRect(20, 90, 181, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setStyleSheet("color: red;\n"
+                                 "\n"
+                                 "")
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self)
+        self.label_2.setGeometry(QtCore.QRect(20, 160, 151, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_2.setFont(font)
+        self.label_2.setStyleSheet("color: green;\n"
+                                   "")
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self)
+        self.label_3.setGeometry(QtCore.QRect(20, 310, 81, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_3.setFont(font)
+        self.label_3.setStyleSheet("color: blue;\n"
+                                   "")
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self)
+        self.label_4.setGeometry(QtCore.QRect(20, 210, 151, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_4.setFont(font)
+        self.label_4.setStyleSheet("color: purple;\n"
+                                   "")
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self)
+        self.label_5.setGeometry(QtCore.QRect(20, 260, 141, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setStyleSheet("color: yellow;")
+        self.label_5.setObjectName("label_5")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self)
+        self.lineEdit_3.setGeometry(QtCore.QRect(300, 100, 113, 22))
+        self.lineEdit_3.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self)
+        self.lineEdit_4.setGeometry(QtCore.QRect(300, 150, 113, 22))
+        self.lineEdit_4.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.lineEdit_5 = QtWidgets.QLineEdit(self)
+        self.lineEdit_5.setGeometry(QtCore.QRect(300, 200, 113, 22))
+        self.lineEdit_5.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_5.setObjectName("lineEdit_5")
+        self.lineEdit_6 = QtWidgets.QLineEdit(self)
+        self.lineEdit_6.setGeometry(QtCore.QRect(300, 260, 113, 22))
+        self.lineEdit_6.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_6.setObjectName("lineEdit_6")
+        self.lineEdit_7 = QtWidgets.QLineEdit(self)
+        self.lineEdit_7.setGeometry(QtCore.QRect(300, 310, 113, 22))
+        self.lineEdit_7.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_7.setObjectName("lineEdit_7")
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("Form", "Test Case 3"))
-        self.label_2.setText(_translate("Form", "Speed Test"))
-        self.label.setText(_translate("Form", "Motor Speed"))
+        self.setWindowTitle(_translate("Form", "Form"))
+        self.lineEdit.setText(_translate("Form", "  VARIABLES NAME"))
+        self.lineEdit_2.setText(_translate("Form", "        VALUES"))
+        self.label.setText(_translate("Form", "H-Bridge Temperature"))
+        self.label_2.setText(_translate("Form", "Motor Temperature"))
+        self.label_3.setText(_translate("Form", "DC-Link"))
+        self.label_4.setText(_translate("Form", "Mechanical Speed"))
+        self.label_5.setText(_translate("Form", "Ultrasonic Sensor"))
 
     def edit_speed(self, speed):
-        self.lineEdit.setText(str(speed))
-
+        #self.lineEdit.setText(str(speed))
+        pass
     def closeEvent(self, event):
         event.ignore()
+
 
 class MplCanvas(Canvas):
     def __init__(self):
@@ -207,11 +292,15 @@ class MplCanvas(Canvas):
         Canvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         Canvas.updateGeometry(self)
 
+
 class GraphWindow(QWidget):
 
     def __init__(self, parent=None):
         super(GraphWindow, self).__init__(parent)
 
+        _translate = QtCore.QCoreApplication.translate
+        self.setObjectName("Temperature / Voltage Graphic")
+        self.setWindowTitle(_translate("Form", "Temperature / Voltage Graphic"))
         self.canvas = MplCanvas()  # Create canvas object
         self.vbl = QtWidgets.QVBoxLayout()  # Set box for plotting
         self.navi_toolbar = NavigationToolbar(self.canvas, self)
@@ -249,6 +338,125 @@ class GraphWindow(QWidget):
     def stop_plot(self):
         self.timer.stop()
 
+
+class FlagsWindow(QWidget):
+    def __init__(self, parent=None):
+        super(FlagsWindow, self).__init__(parent)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setObjectName("Form")
+        self.resize(1024, 768)
+        self.setStyleSheet("background-color: rgb(56, 56, 56);")
+        self.line = QtWidgets.QFrame(self)
+        self.line.setGeometry(QtCore.QRect(0, 60, 1081, 16))
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.line_2 = QtWidgets.QFrame(self)
+        self.line_2.setGeometry(QtCore.QRect(470, 0, 20, 721))
+        self.line_2.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_2.setObjectName("line_2")
+        self.line_3 = QtWidgets.QFrame(self)
+        self.line_3.setGeometry(QtCore.QRect(250, 0, 20, 731))
+        self.line_3.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
+        self.lineEdit = QtWidgets.QLineEdit(self)
+        self.lineEdit.setGeometry(QtCore.QRect(60, 11, 121, 41))
+        self.lineEdit.setStyleSheet("background-color: rgb(255, 140, 0);")
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self)
+        self.lineEdit_2.setGeometry(QtCore.QRect(300, 10, 121, 41))
+        self.lineEdit_2.setStyleSheet("background-color: rgb(255, 140, 0);")
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.label = QtWidgets.QLabel(self)
+        self.label.setGeometry(QtCore.QRect(20, 90, 181, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setStyleSheet("color: red;\n"
+                                 "\n"
+                                 "")
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self)
+        self.label_2.setGeometry(QtCore.QRect(20, 160, 151, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_2.setFont(font)
+        self.label_2.setStyleSheet("color: green;\n"
+                                   "")
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self)
+        self.label_3.setGeometry(QtCore.QRect(20, 310, 81, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_3.setFont(font)
+        self.label_3.setStyleSheet("color: blue;\n"
+                                   "")
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self)
+        self.label_4.setGeometry(QtCore.QRect(20, 210, 151, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_4.setFont(font)
+        self.label_4.setStyleSheet("color: purple;\n"
+                                   "")
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self)
+        self.label_5.setGeometry(QtCore.QRect(20, 260, 141, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_5.setFont(font)
+        self.label_5.setStyleSheet("color: yellow;")
+        self.label_5.setObjectName("label_5")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self)
+        self.lineEdit_3.setGeometry(QtCore.QRect(300, 100, 113, 22))
+        self.lineEdit_3.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self)
+        self.lineEdit_4.setGeometry(QtCore.QRect(300, 150, 113, 22))
+        self.lineEdit_4.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.lineEdit_5 = QtWidgets.QLineEdit(self)
+        self.lineEdit_5.setGeometry(QtCore.QRect(300, 200, 113, 22))
+        self.lineEdit_5.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_5.setObjectName("lineEdit_5")
+        self.lineEdit_6 = QtWidgets.QLineEdit(self)
+        self.lineEdit_6.setGeometry(QtCore.QRect(300, 260, 113, 22))
+        self.lineEdit_6.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_6.setObjectName("lineEdit_6")
+        self.lineEdit_7 = QtWidgets.QLineEdit(self)
+        self.lineEdit_7.setGeometry(QtCore.QRect(300, 310, 113, 22))
+        self.lineEdit_7.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_7.setObjectName("lineEdit_7")
+
+        self.retranslateUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Form", "Form"))
+        self.lineEdit.setText(_translate("Form", "  VARIABLES NAME"))
+        self.lineEdit_2.setText(_translate("Form", "        VALUES"))
+        self.label.setText(_translate("Form", "H-Bridge Temperature"))
+        self.label_2.setText(_translate("Form", "Motor Temperature"))
+        self.label_3.setText(_translate("Form", "DC-Link"))
+        self.label_4.setText(_translate("Form", "Mechanical Speed"))
+        self.label_5.setText(_translate("Form", "Ultrasonic Sensor"))
+
+
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
@@ -283,12 +491,13 @@ class Ui_MainWindow(object):
         MainWindow.resize(1280, 768)
 
         scriptDir = os.path.dirname(os.path.realpath(__file__))
-        MainWindow.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + "Images" + os.path.sep +"icon.png"))
+        MainWindow.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + "Images" + os.path.sep + "icon.png"))
 
         self.openTestCase1Window()
         self.openTestCase2Window()
         self.openTestCase3Window()
         self.openGraphWindow()
+        self.openFlagsWindow()
 
         self.MainWindow = MainWindow
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -561,8 +770,6 @@ class Ui_MainWindow(object):
                     self.test_case_2(data.split(" ")[4])
                     self.test_case_3(data.split(" ")[5])
 
-
-
     def test_case_1(self, data):
         global temperature
         d_s = data.split(" ")
@@ -590,7 +797,6 @@ class Ui_MainWindow(object):
 
         self.voltageV.append(self.voltage)
         self.check_voltage(self.voltage)
-
 
     def test_case_3(self, data):
         try:
@@ -631,7 +837,6 @@ class Ui_MainWindow(object):
             speed_test = True
         else:
             speed_test = False
-
 
     def set_vars_to_zero(self):
         self.maxHTemp = 0
@@ -698,6 +903,9 @@ class Ui_MainWindow(object):
         self.graphWindow.start_timer()
         self.graphWindow.setVisible(True)
         self.graphWindow.activateWindow()
+
+        self.flagsWindow.setVisible(True)
+        self.flagsWindow.activateWindow()
 
         self.counter = 0
         self.timer = QTimer()
@@ -770,6 +978,7 @@ class Ui_MainWindow(object):
         self.testCase2Window.setVisible(False)
         self.testCase3Window.setVisible(False)
         #self.graphWindow.setVisible(False)
+        #self.flagsWindow.setVisible(False)
         self.graphWindow.stop_plot()
 
         self.progressBar.setValue(0)
@@ -799,6 +1008,11 @@ class Ui_MainWindow(object):
         self.graphWindow = GraphWindow()
         self.graphWindow.show()
         self.graphWindow.setVisible(False)
+
+    def openFlagsWindow(self):
+        self.flagsWindow = FlagsWindow()
+        self.flagsWindow.show()
+        self.flagsWindow.setVisible(False)
 
     def check_temps(self, temp, hum, motor_temp, motor_hum):
         if temp > self.maxHTemp:

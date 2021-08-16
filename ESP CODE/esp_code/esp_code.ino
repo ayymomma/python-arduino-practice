@@ -1,15 +1,15 @@
 #include <DHT.h>  // Including library for dht 
 #include <ESP8266WiFi.h>
 
-const char *ssid =  "DIGI-T53k";    
-const char *pass =  "TF359U9k";
-//const char *ssid = "ureche";
-//const char *pass = "qwerty123";
+//const char *ssid =  "DIGI-T53k";    
+//const char *pass =  "TF359U9k";
+const char *ssid = "ureche";
+const char *pass = "qwerty123";
 
 const uint16_t port = 50100;
-const char *host = "192.168.100.44";
+//const char *host = "192.168.100.44";
 //uint16_t port = 50100;
-//const char *host = "192.168.43.198";
+const char *host = "192.168.43.198";
 
 char test_case = '0';
 float voltage_value = 0.0;
