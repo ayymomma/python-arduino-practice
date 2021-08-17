@@ -1,4 +1,3 @@
-
 import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
@@ -6,6 +5,7 @@ import os
 import threading
 from matplotlib.figure import Figure
 import matplotlib
+
 matplotlib.use('Qt5Agg')
 
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
@@ -40,7 +40,7 @@ voltage = 0
 
 
 class test1_Window(QWidget):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(test1_Window, self).__init__(parent)
         # label = QLabel("Sub Window", self)
         self.setupUi()
@@ -96,7 +96,6 @@ class test1_Window(QWidget):
         self.lineEdit_3.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
         self.lineEdit_4.setStyleSheet("""QLineEdit { background-color: rgb(25, 25, 25) }""")
 
-
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -109,7 +108,7 @@ class test1_Window(QWidget):
         self.label_4.setText(_translate("Form", "HBridge Humidity"))
         self.label_5.setText(_translate("Form", "Motor Humidity"))
 
-    def edit_temps(self,htemp, hhum, mtemp, mhum):
+    def edit_temps(self, htemp, hhum, mtemp, mhum):
         self.lineEdit.setText(str(htemp))
         self.lineEdit_3.setText(str(hhum))
         self.lineEdit_2.setText(str(mtemp))
@@ -120,7 +119,7 @@ class test1_Window(QWidget):
 
 
 class test2_Window(QWidget):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(test2_Window, self).__init__(parent)
         self.setupUi()
 
@@ -147,7 +146,6 @@ class test2_Window(QWidget):
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("Form", "Test Case 2"))
@@ -156,6 +154,7 @@ class test2_Window(QWidget):
 
     def edit_voltage(self, voltage):
         self.lineEdit_2.setText(str(voltage))
+
     def closeEvent(self, event):
         event.ignore()
 
@@ -278,8 +277,9 @@ class test3_Window(QWidget):
         self.label_5.setText(_translate("Form", "Ultrasonic Sensor"))
 
     def edit_speed(self, speed):
-        #self.lineEdit.setText(str(speed))
+        # self.lineEdit.setText(str(speed))
         pass
+
     def closeEvent(self, event):
         event.ignore()
 
@@ -380,32 +380,17 @@ class FlagsWindow(QWidget):
                                  "\n"
                                  "")
         self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self)
-        self.label_2.setGeometry(QtCore.QRect(20, 160, 151, 16))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.label_2.setFont(font)
-        self.label_2.setStyleSheet("color: green;\n"
-                                   "")
-        self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(self)
-        self.label_3.setGeometry(QtCore.QRect(20, 310, 81, 16))
+        self.label_3.setGeometry(QtCore.QRect(20, 220, 81, 16))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_3.setFont(font)
         self.label_3.setStyleSheet("color: blue;\n"
                                    "")
         self.label_3.setObjectName("label_3")
-        self.label_4 = QtWidgets.QLabel(self)
-        self.label_4.setGeometry(QtCore.QRect(20, 210, 151, 16))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.label_4.setFont(font)
-        self.label_4.setStyleSheet("color: purple;\n"
-                                   "")
-        self.label_4.setObjectName("label_4")
+
         self.label_5 = QtWidgets.QLabel(self)
-        self.label_5.setGeometry(QtCore.QRect(20, 260, 141, 16))
+        self.label_5.setGeometry(QtCore.QRect(20, 160, 141, 16))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_5.setFont(font)
@@ -418,29 +403,20 @@ class FlagsWindow(QWidget):
                                       "border-style:inset;")
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.lineEdit_4 = QtWidgets.QLineEdit(self)
-        self.lineEdit_4.setGeometry(QtCore.QRect(300, 150, 113, 22))
+        self.lineEdit_4.setGeometry(QtCore.QRect(300, 160, 113, 22))
         self.lineEdit_4.setStyleSheet("border-color: rgb(56, 56, 56);\n"
                                       "border-width : 1.2px;\n"
                                       "border-style:inset;")
         self.lineEdit_4.setObjectName("lineEdit_4")
         self.lineEdit_5 = QtWidgets.QLineEdit(self)
-        self.lineEdit_5.setGeometry(QtCore.QRect(300, 200, 113, 22))
+        self.lineEdit_5.setGeometry(QtCore.QRect(300, 220, 113, 22))
         self.lineEdit_5.setStyleSheet("border-color: rgb(56, 56, 56);\n"
                                       "border-width : 1.2px;\n"
                                       "border-style:inset;")
         self.lineEdit_5.setObjectName("lineEdit_5")
-        self.lineEdit_6 = QtWidgets.QLineEdit(self)
-        self.lineEdit_6.setGeometry(QtCore.QRect(300, 260, 113, 22))
-        self.lineEdit_6.setStyleSheet("border-color: rgb(56, 56, 56);\n"
-                                      "border-width : 1.2px;\n"
-                                      "border-style:inset;")
-        self.lineEdit_6.setObjectName("lineEdit_6")
-        self.lineEdit_7 = QtWidgets.QLineEdit(self)
-        self.lineEdit_7.setGeometry(QtCore.QRect(300, 310, 113, 22))
-        self.lineEdit_7.setStyleSheet("border-color: rgb(56, 56, 56);\n"
-                                      "border-width : 1.2px;\n"
-                                      "border-style:inset;")
-        self.lineEdit_7.setObjectName("lineEdit_7")
+        self.graphicsView = QtWidgets.QGraphicsView(self)
+        self.graphicsView.setGeometry(QtCore.QRect(490, 80, 570, 170))
+        self.graphicsView.setObjectName("graphicsView")
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -450,11 +426,30 @@ class FlagsWindow(QWidget):
         self.setWindowTitle(_translate("Form", "Form"))
         self.lineEdit.setText(_translate("Form", "  VARIABLES NAME"))
         self.lineEdit_2.setText(_translate("Form", "        VALUES"))
-        self.label.setText(_translate("Form", "H-Bridge Temperature"))
-        self.label_2.setText(_translate("Form", "Motor Temperature"))
+        self.label.setText(_translate("Form", "H-Bridge & Motor Temperature"))
         self.label_3.setText(_translate("Form", "DC-Link"))
-        self.label_4.setText(_translate("Form", "Mechanical Speed"))
         self.label_5.setText(_translate("Form", "Ultrasonic Sensor"))
+
+    def draw_flags(self, x_vals, y_temp_vals, y_voltage_vals, y_distance_vals):
+        scene = QtWidgets.QGraphicsScene()
+        self.graphicsView.setScene(scene)
+
+        for i in range(1, len(x_vals)):
+            red_pen = QtGui.QPen(QtCore.Qt.red)
+            yellow_pen = QtGui.QPen(QtCore.Qt.yellow)
+            blue_pen = QtGui.QPen(QtCore.Qt.blue)
+
+            r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
+                              QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
+            scene.addLine(r, red_pen)
+
+            r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
+                              QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
+            scene.addLine(r, yellow_pen)
+
+            r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
+                              QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
+            scene.addLine(r, blue_pen)
 
 
 class Ui_MainWindow(object):
@@ -477,7 +472,7 @@ class Ui_MainWindow(object):
         self.maxMHum = 0
         self.minHHum = 100
         self.minMHum = 100
-        self.motor_sens = 1 # 1 -> positive  / 2 -> negative
+        self.motor_sens = 1  # 1 -> positive  / 2 -> negative
         self.maxVoltage = 0
         self.minVoltage = 100
         self.maxSpeed = 0
@@ -486,6 +481,12 @@ class Ui_MainWindow(object):
         self.voltageV = []
         self.cnt = 0
         self.distance = 100
+
+        # values for flags
+        self.x_values_for_flags = []
+        self.y_values_temperature = []
+        self.y_values_voltage = []
+        self.y_values_distance = []
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 768)
@@ -647,7 +648,6 @@ class Ui_MainWindow(object):
                                     border-radius: 10px
                                     }""")
 
-
         self.label_temp = QtWidgets.QLabel(self.centralwidget)
         self.label_temp.setGeometry(QtCore.QRect(705, 260, 120, 31))
         self.label_temp.setObjectName("label")
@@ -729,7 +729,6 @@ class Ui_MainWindow(object):
         global max_voltage, voltage_fail
         if voltage > max_voltage:
             voltage_fail = True
-
 
     def positive_click(self):
         self.motor_sens = 1
@@ -854,6 +853,11 @@ class Ui_MainWindow(object):
         self.cnt = 0
         self.distance = 100
 
+        self.x_values_for_flags = []
+        self.y_values_temperature = []
+        self.y_values_voltage = []
+        self.y_values_distance = []
+
     def start(self):
         global start_test, temperature_fail, voltage_fail, speed_fail, distance_fail, \
             temperature_test, voltage_test, speed_test, max_temp
@@ -904,8 +908,8 @@ class Ui_MainWindow(object):
         self.graphWindow.setVisible(True)
         self.graphWindow.activateWindow()
 
-        self.flagsWindow.setVisible(True)
-        self.flagsWindow.activateWindow()
+        # self.flagsWindow.setVisible(True)
+        # self.flagsWindow.activateWindow()
 
         self.counter = 0
         self.timer = QTimer()
@@ -913,13 +917,19 @@ class Ui_MainWindow(object):
         self.timer.timeout.connect(self.start_test_counter)
         self.timer.start()
 
-
         threading.Thread(target=self.start_test_counter).start()
 
     def stop(self):
         global start_test
 
+        while len(self.x_values_for_flags) < 30:
+            self.x_values_for_flags.append(self.x_values_for_flags[-1] + 1)
+            self.y_values_voltage.append(0)
+            self.y_values_temperature.append(0)
+            self.y_values_distance.append(0)
 
+        self.flagsWindow.setVisible(True)
+        self.flagsWindow.activateWindow()
 
         if temperature_test:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -939,7 +949,6 @@ class Ui_MainWindow(object):
                             + str(self.maxMTemp) + "\n")
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Maximum Motor Humidity: "
                             + str(self.maxMHum) + "\n")
-
 
         if voltage_test:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -961,24 +970,22 @@ class Ui_MainWindow(object):
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Minimum Speed: "
                             + str(self.minSpeed) + "\n")
 
-
         self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                   + ": " + "Test stopped!")
         self.file.write("\n" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": " + "Test stopped!" + "\n")
-
-
 
         self.pushButton.setEnabled(True)
         self.pushButton_2.setEnabled(False)
         self.send_bytes_to_client("X")
         self.timer.stop()
-
+        self.flagsWindow.draw_flags(self.x_values_for_flags, self.y_values_temperature, self.y_values_voltage,
+                                    self.y_values_distance)
 
         self.testCase1Window.setVisible(False)
         self.testCase2Window.setVisible(False)
         self.testCase3Window.setVisible(False)
-        #self.graphWindow.setVisible(False)
-        #self.flagsWindow.setVisible(False)
+        # self.graphWindow.setVisible(False)
+        # self.flagsWindow.setVisible(False)
         self.graphWindow.stop_plot()
 
         self.progressBar.setValue(0)
@@ -1018,33 +1025,40 @@ class Ui_MainWindow(object):
         if temp > self.maxHTemp:
             self.maxHTemp = temp
         if temp < self.minHTemp:
-           self.minHTemp = temp
+            self.minHTemp = temp
 
         if hum > self.maxHHum:
-           self.maxHHum = hum
+            self.maxHHum = hum
 
         if hum < self.minHHum:
-           self.minHHum = hum
+            self.minHHum = hum
 
         if motor_temp > self.maxMTemp:
             self.maxMTemp = motor_temp
         if motor_temp < self.minMTemp:
-           self.minMTemp = motor_temp
+            self.minMTemp = motor_temp
 
         if motor_hum > self.maxMHum:
-           self.maxMHum = motor_hum
+            self.maxMHum = motor_hum
 
         if motor_hum < self.minMHum:
-           self.minMHum = motor_hum
-
+            self.minMHum = motor_hum
 
     def start_test_counter(self):
         global temperature_fail, speed_fail, voltage_fail, distance_fail
+
+        # add values for x axis
+        self.x_values_for_flags.append(self.counter)
+
         self.counter += 1
         self.progressBar.setValue(int((self.counter * 100) / self.test_time))
 
+        self.y_values_temperature.append(int(temperature_fail))
+        self.y_values_voltage.append(int(voltage_fail))
+        self.y_values_distance.append(int(distance_fail))
+
         self.check_temps(float(self.temp), float(self.hum), float(self.motor_temp), float(self.motor_hum))
-        #self.start_plot()
+
         if self.temp_box:
             self.testCase1Window.edit_temps(self.temp, self.hum, self.motor_temp, self.motor_hum)
 
@@ -1062,30 +1076,32 @@ class Ui_MainWindow(object):
                 self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
                 + "Voltage: " + str(self.voltage))
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
-                + "Test FAILED! Voltage is greater than limit!" + "\n")
+                            + "Test FAILED! Voltage is greater than limit!" + "\n")
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
                             + "Voltage: " + str(self.voltage) + "\n")
 
             self.stop()
-
 
         if temperature_fail:
             self.textbox.setPlainText(
                 self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
                 + "Test FAILED! Temperature is greater than limit!")
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + ": "
-                + "Test FAILED! Temperature is greater than limit!" + "\n")
+                            + "Test FAILED! Temperature is greater than limit!" + "\n")
             self.stop()
 
         if self.counter > self.test_time:
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                       + ": " + "Test SUCCEED!")
             self.file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                      + ": " + "Test SUCCEED!" + "\n")
+                            + ": " + "Test SUCCEED!" + "\n")
             self.stop()
 
-        if self.distance < 0.0:
+        if self.distance < 20.0:
             distance_fail = True
+            self.y_values_distance.pop()
+            self.y_values_distance.append(int(distance_fail))
+
             self.textbox.setPlainText(self.textbox.toPlainText() + '\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                                       + ": " + "Distance from motor lower than limit! ")
             self.file.write('\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -1095,7 +1111,6 @@ class Ui_MainWindow(object):
             self.file.write('\n' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                             + ": " + "Distance:" + str(self.distance))
             self.stop()
-
 
     def test_cases(self):
         global temperature_test, voltage_test, speed_test
@@ -1124,7 +1139,6 @@ def kill_proc_tree(pid, including_parent=True):
         parent.kill()
 
 
-
 palette = QPalette()
 palette.setColor(QPalette.Window, QColor(40, 40, 40))
 palette.setColor(QPalette.WindowText, QColor(200, 200, 200))
@@ -1139,6 +1153,7 @@ palette.setColor(QPalette.BrightText, Qt.red)
 palette.setColor(QPalette.Link, QColor(42, 130, 218))
 palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
 palette.setColor(QPalette.HighlightedText, Qt.black)
+
 
 def main():
     import sys
@@ -1156,4 +1171,3 @@ if __name__ == "__main__":
 
 me = os.getpid()
 kill_proc_tree(me)
-

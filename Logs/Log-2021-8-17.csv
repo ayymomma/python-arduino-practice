@@ -1,0 +1,313 @@
+17/08/2021 12:38:01: Test started!
+17/08/2021 12:38:20: Maximum H Bridge Temperature: 26.6
+17/08/2021 12:38:20: Maximum H Bridge Humidity: 61.0
+17/08/2021 12:38:20: Maximum Motor Temperature: 27.3
+17/08/2021 12:38:20: Maximum Motor Humidity: 59.0
+17/08/2021 12:38:20: Maximum Supply Voltage: 46.57
+17/08/2021 12:38:20: Minimum Supply Voltage: 46.57
+17/08/2021 12:38:20: Maximum Speed: 10000.0
+17/08/2021 12:38:20: Minimum Speed: 10000.0
+
+17/08/2021 12:38:20: Test stopped!
+17/08/2021 12:39:56: Test started!
+
+17/08/2021 12:39:57: Distance from motor lower than limit! 
+
+17/08/2021 12:39:57: Distance:9.0817/08/2021 12:39:57: Maximum H Bridge Temperature: 26.6
+17/08/2021 12:39:57: Maximum H Bridge Humidity: 61.0
+17/08/2021 12:39:57: Maximum Motor Temperature: 27.3
+17/08/2021 12:39:57: Maximum Motor Humidity: 59.0
+17/08/2021 12:39:57: Maximum Supply Voltage: 46.57
+17/08/2021 12:39:57: Minimum Supply Voltage: 46.57
+17/08/2021 12:39:57: Maximum Speed: 10000.0
+17/08/2021 12:39:57: Minimum Speed: 10000.0
+
+17/08/2021 12:39:57: Test stopped!
+17/08/2021 12:43:26: Test started!
+
+17/08/2021 12:43:46: Distance from motor lower than limit! 
+
+17/08/2021 12:43:46: Distance:19.5217/08/2021 12:43:46: Maximum H Bridge Temperature: 26.6
+17/08/2021 12:43:46: Maximum H Bridge Humidity: 65.0
+17/08/2021 12:43:46: Maximum Motor Temperature: 27.4
+17/08/2021 12:43:46: Maximum Motor Humidity: 61.0
+17/08/2021 12:43:46: Maximum Supply Voltage: 46.57
+17/08/2021 12:43:46: Minimum Supply Voltage: 0.0
+
+17/08/2021 12:43:46: Test stopped!
+17/08/2021 12:45:08: Test started!
+
+17/08/2021 12:45:24: Distance from motor lower than limit! 
+
+17/08/2021 12:45:24: Distance:18.9417/08/2021 12:45:24: Maximum H Bridge Temperature: 26.6
+17/08/2021 12:45:24: Maximum H Bridge Humidity: 64.0
+17/08/2021 12:45:24: Maximum Motor Temperature: 27.4
+17/08/2021 12:45:24: Maximum Motor Humidity: 60.0
+17/08/2021 12:45:24: Maximum Supply Voltage: 46.57
+17/08/2021 12:45:24: Minimum Supply Voltage: 0.0
+17/08/2021 12:45:24: Maximum Speed: 10000.0
+17/08/2021 12:45:24: Minimum Speed: 10000.0
+
+17/08/2021 12:45:24: Test stopped!
+17/08/2021 12:49:23: Test started!
+17/08/2021 12:49:47: Maximum H Bridge Temperature: 26.6
+17/08/2021 12:49:47: Maximum H Bridge Humidity: 64.0
+17/08/2021 12:49:47: Maximum Motor Temperature: 27.1
+17/08/2021 12:49:47: Maximum Motor Humidity: 62.0
+17/08/2021 12:49:47: Maximum Supply Voltage: 46.57
+17/08/2021 12:49:47: Minimum Supply Voltage: 0.0
+
+17/08/2021 12:49:47: Test stopped!
+17/08/2021 12:49:49: Test started!
+
+17/08/2021 12:50:00: Distance from motor lower than limit! 
+
+17/08/2021 12:50:00: Distance:8.0617/08/2021 12:50:00: Maximum H Bridge Temperature: 26.6
+17/08/2021 12:50:00: Maximum H Bridge Humidity: 64.0
+17/08/2021 12:50:00: Maximum Motor Temperature: 27.1
+17/08/2021 12:50:00: Maximum Motor Humidity: 62.0
+17/08/2021 12:50:00: Maximum Supply Voltage: 46.57
+17/08/2021 12:50:00: Minimum Supply Voltage: 9.87
+
+17/08/2021 12:50:00: Test stopped!
+17/08/2021 13:12:27: Test started!
+
+17/08/2021 13:12:41: Distance from motor lower than limit! 
+
+17/08/2021 13:12:41: Distance:6.2717/08/2021 13:12:41: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:12:41: Maximum H Bridge Humidity: 65.0
+17/08/2021 13:12:41: Maximum Motor Temperature: 27.2
+17/08/2021 13:12:41: Maximum Motor Humidity: 63.0
+17/08/2021 13:12:41: Maximum Supply Voltage: 46.57
+17/08/2021 13:12:41: Minimum Supply Voltage: 4.46
+
+17/08/2021 13:12:41: Test stopped!
+17/08/2021 13:30:25: Test started!
+17/08/2021 13:30:44: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:30:44: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:30:44: Maximum Motor Temperature: 27.3
+17/08/2021 13:30:44: Maximum Motor Humidity: 64.0
+17/08/2021 13:30:44: Maximum Supply Voltage: 46.57
+17/08/2021 13:30:44: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:30:44: Test stopped!
+17/08/2021 13:33:12: Test started!
+17/08/2021 13:33:42: Test SUCCEED!
+17/08/2021 13:33:42: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:33:42: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:33:42: Maximum Motor Temperature: 27.3
+17/08/2021 13:33:42: Maximum Motor Humidity: 64.0
+17/08/2021 13:33:42: Maximum Supply Voltage: 46.57
+17/08/2021 13:33:42: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:33:42: Test stopped!
+17/08/2021 13:35:08: Test started!
+17/08/2021 13:35:08: Maximum H Bridge Temperature: 0
+17/08/2021 13:35:08: Maximum H Bridge Humidity: 0
+17/08/2021 13:35:08: Maximum Motor Temperature: 0
+17/08/2021 13:35:08: Maximum Motor Humidity: 0
+17/08/2021 13:35:08: Maximum Supply Voltage: 0
+17/08/2021 13:35:08: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:35:08: Test stopped!
+17/08/2021 13:35:52: Test started!
+17/08/2021 13:35:52: Maximum H Bridge Temperature: 0
+17/08/2021 13:35:52: Maximum H Bridge Humidity: 0
+17/08/2021 13:35:52: Maximum Motor Temperature: 0
+17/08/2021 13:35:52: Maximum Motor Humidity: 0
+17/08/2021 13:35:52: Maximum Supply Voltage: 0
+17/08/2021 13:35:52: Minimum Supply Voltage: 100
+
+17/08/2021 13:35:52: Test stopped!
+17/08/2021 13:39:18: Test started!
+17/08/2021 13:39:49: Test SUCCEED!
+17/08/2021 13:39:49: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:39:49: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:39:49: Maximum Motor Temperature: 27.4
+17/08/2021 13:39:49: Maximum Motor Humidity: 64.0
+17/08/2021 13:39:49: Maximum Supply Voltage: 46.57
+17/08/2021 13:39:49: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:39:49: Test stopped!
+17/08/2021 13:40:40: Test started!
+17/08/2021 13:40:57: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:40:57: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:40:57: Maximum Motor Temperature: 27.4
+17/08/2021 13:40:57: Maximum Motor Humidity: 64.0
+17/08/2021 13:40:57: Maximum Supply Voltage: 46.57
+17/08/2021 13:40:57: Minimum Supply Voltage: 0.0
+17/08/2021 13:40:57: Maximum Speed: 10000.0
+17/08/2021 13:40:57: Minimum Speed: 10000.0
+
+17/08/2021 13:40:57: Test stopped!
+17/08/2021 13:41:16: Test started!
+17/08/2021 13:41:25: Maximum H Bridge Temperature: 26.7
+17/08/2021 13:41:25: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:41:25: Maximum Motor Temperature: 27.4
+17/08/2021 13:41:25: Maximum Motor Humidity: 64.0
+17/08/2021 13:41:25: Maximum Supply Voltage: 46.57
+17/08/2021 13:41:25: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:41:25: Test stopped!
+17/08/2021 13:42:05: Test started!
+17/08/2021 13:42:35: Test SUCCEED!
+17/08/2021 13:42:35: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:42:35: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:42:35: Maximum Motor Temperature: 27.4
+17/08/2021 13:42:35: Maximum Motor Humidity: 64.0
+17/08/2021 13:42:35: Maximum Supply Voltage: 46.57
+17/08/2021 13:42:35: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:42:35: Test stopped!
+17/08/2021 13:44:17: Test started!
+17/08/2021 13:44:23: Maximum H Bridge Temperature: 26.7
+17/08/2021 13:44:23: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:44:23: Maximum Motor Temperature: 27.4
+17/08/2021 13:44:23: Maximum Motor Humidity: 64.0
+17/08/2021 13:44:23: Maximum Supply Voltage: 46.57
+17/08/2021 13:44:23: Minimum Supply Voltage: 0.0
+17/08/2021 13:44:23: Maximum Speed: 10000.0
+17/08/2021 13:44:23: Minimum Speed: 10000.0
+
+17/08/2021 13:44:23: Test stopped!
+17/08/2021 13:44:55: Test started!
+17/08/2021 13:45:25: Test SUCCEED!
+17/08/2021 13:45:25: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:45:25: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:45:25: Maximum Motor Temperature: 27.4
+17/08/2021 13:45:25: Maximum Motor Humidity: 64.0
+17/08/2021 13:45:25: Maximum Supply Voltage: 46.57
+17/08/2021 13:45:25: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:45:25: Test stopped!
+17/08/2021 13:46:24: Test started!
+17/08/2021 13:46:54: Test SUCCEED!
+17/08/2021 13:46:54: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:46:54: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:46:54: Maximum Motor Temperature: 27.4
+17/08/2021 13:46:54: Maximum Motor Humidity: 64.0
+17/08/2021 13:46:54: Maximum Supply Voltage: 46.57
+17/08/2021 13:46:54: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:46:54: Test stopped!
+17/08/2021 13:47:45: Test started!
+17/08/2021 13:47:47: Maximum H Bridge Temperature: 26.7
+17/08/2021 13:47:47: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:47:47: Maximum Motor Temperature: 27.4
+17/08/2021 13:47:47: Maximum Motor Humidity: 64.0
+17/08/2021 13:47:47: Maximum Supply Voltage: 46.57
+17/08/2021 13:47:47: Minimum Supply Voltage: 5.73
+
+17/08/2021 13:47:47: Test stopped!
+17/08/2021 13:48:17: Test started!
+17/08/2021 13:48:19: Maximum H Bridge Temperature: 26.7
+17/08/2021 13:48:19: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:48:19: Maximum Motor Temperature: 27.3
+17/08/2021 13:48:19: Maximum Motor Humidity: 64.0
+17/08/2021 13:48:19: Maximum Supply Voltage: 46.57
+17/08/2021 13:48:19: Minimum Supply Voltage: 46.57
+
+17/08/2021 13:48:19: Test stopped!
+17/08/2021 13:48:40: Test started!
+17/08/2021 13:48:44: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:48:44: Maximum H Bridge Humidity: 65.0
+17/08/2021 13:48:44: Maximum Motor Temperature: 27.3
+17/08/2021 13:48:44: Maximum Motor Humidity: 64.0
+17/08/2021 13:48:44: Maximum Supply Voltage: 46.57
+17/08/2021 13:48:44: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:48:44: Test stopped!
+17/08/2021 13:49:21: Test started!
+17/08/2021 13:49:24: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:49:24: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:49:24: Maximum Motor Temperature: 27.3
+17/08/2021 13:49:24: Maximum Motor Humidity: 64.0
+17/08/2021 13:49:24: Maximum Supply Voltage: 46.57
+17/08/2021 13:49:24: Minimum Supply Voltage: 46.57
+
+17/08/2021 13:49:24: Test stopped!
+17/08/2021 13:50:22: Test started!
+17/08/2021 13:50:25: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:50:25: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:50:25: Maximum Motor Temperature: 27.3
+17/08/2021 13:50:25: Maximum Motor Humidity: 64.0
+17/08/2021 13:50:25: Maximum Supply Voltage: 46.57
+17/08/2021 13:50:25: Minimum Supply Voltage: 46.57
+
+17/08/2021 13:50:25: Test stopped!
+17/08/2021 13:50:59: Test started!
+17/08/2021 13:51:02: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:51:02: Maximum H Bridge Humidity: 65.0
+17/08/2021 13:51:02: Maximum Motor Temperature: 27.3
+17/08/2021 13:51:02: Maximum Motor Humidity: 64.0
+17/08/2021 13:51:02: Maximum Supply Voltage: 46.57
+17/08/2021 13:51:02: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:51:02: Test stopped!
+17/08/2021 13:51:32: Test started!
+
+17/08/2021 13:51:41: Distance from motor lower than limit! 
+
+17/08/2021 13:51:41: Distance:11.817/08/2021 13:51:41: Maximum H Bridge Temperature: 26.6
+17/08/2021 13:51:41: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:51:41: Maximum Motor Temperature: 27.4
+17/08/2021 13:51:41: Maximum Motor Humidity: 64.0
+17/08/2021 13:51:41: Maximum Supply Voltage: 46.57
+17/08/2021 13:51:41: Minimum Supply Voltage: 45.88
+
+17/08/2021 13:51:41: Test stopped!
+17/08/2021 13:53:05: Test started!
+17/08/2021 13:53:15: Maximum H Bridge Temperature: 26.7
+17/08/2021 13:53:15: Maximum H Bridge Humidity: 67.0
+17/08/2021 13:53:15: Maximum Motor Temperature: 27.4
+17/08/2021 13:53:15: Maximum Motor Humidity: 64.0
+17/08/2021 13:53:15: Maximum Supply Voltage: 46.57
+17/08/2021 13:53:15: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:53:15: Test stopped!
+17/08/2021 13:53:27: Test started!
+
+17/08/2021 13:53:43: Distance from motor lower than limit! 
+
+17/08/2021 13:53:43: Distance:9.2517/08/2021 13:53:43: Maximum H Bridge Temperature: 26.7
+17/08/2021 13:53:43: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:53:43: Maximum Motor Temperature: 27.4
+17/08/2021 13:53:43: Maximum Motor Humidity: 64.0
+17/08/2021 13:53:43: Maximum Supply Voltage: 46.57
+17/08/2021 13:53:43: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:53:43: Test stopped!
+17/08/2021 13:57:56: Test started!
+17/08/2021 13:58:26: Test SUCCEED!
+17/08/2021 13:58:26: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:58:26: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:58:26: Maximum Motor Temperature: 27.4
+17/08/2021 13:58:26: Maximum Motor Humidity: 65.0
+17/08/2021 13:58:26: Maximum Supply Voltage: 46.57
+17/08/2021 13:58:26: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:58:26: Test stopped!
+17/08/2021 13:58:44: Test started!
+
+17/08/2021 13:59:04: Distance from motor lower than limit! 
+
+17/08/2021 13:59:04: Distance:7.7717/08/2021 13:59:04: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:59:04: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:59:04: Maximum Motor Temperature: 27.4
+17/08/2021 13:59:04: Maximum Motor Humidity: 64.0
+17/08/2021 13:59:04: Maximum Supply Voltage: 46.57
+17/08/2021 13:59:04: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:59:04: Test stopped!
+17/08/2021 13:59:49: Test started!
+
+17/08/2021 13:59:57: Distance from motor lower than limit! 
+
+17/08/2021 13:59:57: Distance:13.1217/08/2021 13:59:57: Maximum H Bridge Temperature: 26.8
+17/08/2021 13:59:57: Maximum H Bridge Humidity: 68.0
+17/08/2021 13:59:57: Maximum Motor Temperature: 27.4
+17/08/2021 13:59:57: Maximum Motor Humidity: 64.0
+17/08/2021 13:59:57: Maximum Supply Voltage: 46.57
+17/08/2021 13:59:57: Minimum Supply Voltage: 0.0
+
+17/08/2021 13:59:57: Test stopped!
