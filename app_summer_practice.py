@@ -346,7 +346,7 @@ class FlagsWindow(QWidget):
 
     def setupUi(self):
         self.setObjectName("Form")
-        self.resize(1024, 768)
+        self.resize(1100, 400)
         self.setStyleSheet("background-color: rgb(56, 56, 56);")
         self.line = QtWidgets.QFrame(self)
         self.line.setGeometry(QtCore.QRect(0, 60, 1081, 16))
@@ -367,10 +367,12 @@ class FlagsWindow(QWidget):
         self.lineEdit.setGeometry(QtCore.QRect(60, 11, 121, 41))
         self.lineEdit.setStyleSheet("background-color: rgb(255, 140, 0);")
         self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit.setReadOnly(True)
         self.lineEdit_2 = QtWidgets.QLineEdit(self)
         self.lineEdit_2.setGeometry(QtCore.QRect(300, 10, 121, 41))
         self.lineEdit_2.setStyleSheet("background-color: rgb(255, 140, 0);")
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setReadOnly(True)
         self.label = QtWidgets.QLabel(self)
         self.label.setGeometry(QtCore.QRect(20, 90, 181, 31))
         font = QtGui.QFont()
@@ -439,17 +441,66 @@ class FlagsWindow(QWidget):
             yellow_pen = QtGui.QPen(QtCore.Qt.yellow)
             blue_pen = QtGui.QPen(QtCore.Qt.blue)
 
-            r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
-                              QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
-            scene.addLine(r, red_pen)
+            if y_temp_vals[i] == 1:
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
+                                  QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
+                scene.addLine(r, red_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
+                scene.addLine(r, red_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
+                scene.addLine(r, red_pen)
+            else:
+                if y_temp_vals[i - 1] == 1:
+                    r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)),
+                                      QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
+                    scene.addLine(r, red_pen)
+                else:
+                    r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)),
+                                      QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)))
+                    scene.addLine(r, red_pen)
 
-            r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
-                              QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
-            scene.addLine(r, yellow_pen)
+            if y_voltage_vals[i] == 1:
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
+                                  QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
+                scene.addLine(r, yellow_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
+                scene.addLine(r, yellow_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i-1] * 20 - 50) * (-1)))
+                scene.addLine(r, yellow_pen)
+            else:
+                if y_voltage_vals[i-1] == 1:
+                    r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)),
+                                      QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
+                    scene.addLine(r, yellow_pen)
+                else:
+                    r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
+                                      QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
+                    scene.addLine(r, yellow_pen)
 
-            r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
-                              QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
-            scene.addLine(r, blue_pen)
+            if y_distance_vals[i] == 1:
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
+                                  QtCore.QPoint(((x_vals[i - 1]) * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
+                scene.addLine(r, blue_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
+                scene.addLine(r, blue_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i-1] * 20 - 100) * (-1)))
+                scene.addLine(r, blue_pen)
+            else:
+                if y_distance_vals[i-1] == 1:
+                    r = QtCore.QLineF(
+                        QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)),
+                        QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
+                    scene.addLine(r, blue_pen)
+                else:
+                    r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
+                                      QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
+                    scene.addLine(r, blue_pen)
 
 
 class Ui_MainWindow(object):
