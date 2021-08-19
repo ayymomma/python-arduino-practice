@@ -1,3 +1,5 @@
+import time
+
 import psutil as psutil
 from PyQt5 import QtCore, QtGui, QtWidgets
 import socket
@@ -360,6 +362,7 @@ class FlagsWindow(QWidget):
         self.y_temp = []
         self.y_volt = []
         self.y_dist = []
+        self.stop = False
 
     def setupUi(self):
         self.setObjectName("Form")
@@ -384,11 +387,13 @@ class FlagsWindow(QWidget):
         self.lineEdit.setGeometry(QtCore.QRect(60, 11, 121, 41))
         self.lineEdit.setStyleSheet("background-color: rgb(255, 140, 0);")
         self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit.setReadOnly(True)
         self.lineEdit_2 = QtWidgets.QLineEdit(self)
         self.lineEdit_2.setGeometry(QtCore.QRect(300, 10, 121, 41))
         self.lineEdit_2.setStyleSheet("background-color: rgb(255, 140, 0);")
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_2.setReadOnly(True)
         self.label = QtWidgets.QLabel(self)
         self.label.setGeometry(QtCore.QRect(20, 90, 181, 31))
@@ -421,18 +426,21 @@ class FlagsWindow(QWidget):
                                       "border-width : 1.2px;\n"
                                       "border-style:inset;")
         self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_3.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_4 = QtWidgets.QLineEdit(self)
         self.lineEdit_4.setGeometry(QtCore.QRect(300, 160, 113, 22))
         self.lineEdit_4.setStyleSheet("border-color: rgb(56, 56, 56);\n"
                                       "border-width : 1.2px;\n"
                                       "border-style:inset;")
         self.lineEdit_4.setObjectName("lineEdit_4")
+        self.lineEdit_4.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_5 = QtWidgets.QLineEdit(self)
         self.lineEdit_5.setGeometry(QtCore.QRect(300, 220, 113, 22))
         self.lineEdit_5.setStyleSheet("border-color: rgb(56, 56, 56);\n"
                                       "border-width : 1.2px;\n"
                                       "border-style:inset;")
         self.lineEdit_5.setObjectName("lineEdit_5")
+        self.lineEdit_5.setAlignment(QtCore.Qt.AlignCenter)
         self.graphicsView = MyGraphicsView(self)
         self.graphicsView.setGeometry(QtCore.QRect(490, 80, 570, 170))
         self.graphicsView.setObjectName("graphicsView")
@@ -525,14 +533,21 @@ class FlagsWindow(QWidget):
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
                     self.scene.addLine(r, blue_pen)
 
-        threading.Thread(target=self.change_values).start()
+        self.stop = False
+        self.thr = threading.Thread(target=self.change_values)
+        self.thr.start()
+
 
     def change_values(self):
         global x_value_mouse_move
-        while True:
+        while not self.stop:
             self.lineEdit_3.setText(str(self.y_temp[int(x_value_mouse_move/20+1)]))
             self.lineEdit_4.setText(str(self.y_volt[int(x_value_mouse_move/20+1)]))
             self.lineEdit_5.setText(str(self.y_dist[int(x_value_mouse_move/20+1)]))
+
+
+    def closeEvent(self, event):
+        self.stop = True
 
 
 class Ui_MainWindow(object):
