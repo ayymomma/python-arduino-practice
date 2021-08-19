@@ -39,6 +39,9 @@ temperature = 0
 voltage = 0
 
 
+x_value_mouse_move = 0
+
+
 class test1_Window(QWidget):
     def __init__(self, parent=None):
         super(test1_Window, self).__init__(parent)
@@ -339,10 +342,24 @@ class GraphWindow(QWidget):
         self.timer.stop()
 
 
+class MyGraphicsView(QtWidgets.QGraphicsView):
+    def __init__(self, parent):
+        QtWidgets.QGraphicsView.__init__(self, parent)
+        self.setMouseTracking(True)
+
+    def mouseMoveEvent(self, event):
+        global x_value_mouse_move
+        x_value_mouse_move = event.pos().x()
+        print(event.pos().x())
+
 class FlagsWindow(QWidget):
     def __init__(self, parent=None):
         super(FlagsWindow, self).__init__(parent)
         self.setupUi()
+        self.x_vals = []
+        self.y_temp = []
+        self.y_volt = []
+        self.y_dist = []
 
     def setupUi(self):
         self.setObjectName("Form")
@@ -416,9 +433,10 @@ class FlagsWindow(QWidget):
                                       "border-width : 1.2px;\n"
                                       "border-style:inset;")
         self.lineEdit_5.setObjectName("lineEdit_5")
-        self.graphicsView = QtWidgets.QGraphicsView(self)
+        self.graphicsView = MyGraphicsView(self)
         self.graphicsView.setGeometry(QtCore.QRect(490, 80, 570, 170))
         self.graphicsView.setObjectName("graphicsView")
+
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -426,15 +444,20 @@ class FlagsWindow(QWidget):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("Form", "Form"))
-        self.lineEdit.setText(_translate("Form", "  VARIABLES NAME"))
-        self.lineEdit_2.setText(_translate("Form", "        VALUES"))
+        self.lineEdit.setText(_translate("Form", "    VARIABLES NAME"))
+        self.lineEdit_2.setText(_translate("Form", "            VALUES"))
         self.label.setText(_translate("Form", "H-Bridge & Motor Temperature"))
         self.label_3.setText(_translate("Form", "DC-Link"))
         self.label_5.setText(_translate("Form", "Ultrasonic Sensor"))
 
     def draw_flags(self, x_vals, y_temp_vals, y_voltage_vals, y_distance_vals):
-        scene = QtWidgets.QGraphicsScene()
-        self.graphicsView.setScene(scene)
+        self.scene = QtWidgets.QGraphicsScene()
+        self.graphicsView.setScene(self.scene)
+
+        self.x_vals = x_vals
+        self.y_temp = y_temp_vals
+        self.y_volt = y_voltage_vals
+        self.y_dist = y_distance_vals
 
         for i in range(1, len(x_vals)):
             red_pen = QtGui.QPen(QtCore.Qt.red)
@@ -444,63 +467,72 @@ class FlagsWindow(QWidget):
             if y_temp_vals[i] == 1:
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
                                   QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
-                scene.addLine(r, red_pen)
+                self.scene.addLine(r, red_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
-                scene.addLine(r, red_pen)
+                self.scene.addLine(r, red_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
-                scene.addLine(r, red_pen)
+                self.scene.addLine(r, red_pen)
             else:
                 if y_temp_vals[i - 1] == 1:
                     r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)),
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
-                    scene.addLine(r, red_pen)
+                    self.scene.addLine(r, red_pen)
                 else:
                     r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)),
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)))
-                    scene.addLine(r, red_pen)
+                    self.scene.addLine(r, red_pen)
 
             if y_voltage_vals[i] == 1:
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
                                   QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
-                scene.addLine(r, yellow_pen)
+                self.scene.addLine(r, yellow_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
-                scene.addLine(r, yellow_pen)
+                self.scene.addLine(r, yellow_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i-1] * 20 - 50) * (-1)))
-                scene.addLine(r, yellow_pen)
+                self.scene.addLine(r, yellow_pen)
             else:
                 if y_voltage_vals[i-1] == 1:
                     r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)),
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
-                    scene.addLine(r, yellow_pen)
+                    self.scene.addLine(r, yellow_pen)
                 else:
                     r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
-                    scene.addLine(r, yellow_pen)
+                    self.scene.addLine(r, yellow_pen)
 
             if y_distance_vals[i] == 1:
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
                                   QtCore.QPoint(((x_vals[i - 1]) * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
-                scene.addLine(r, blue_pen)
+                self.scene.addLine(r, blue_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
-                scene.addLine(r, blue_pen)
+                self.scene.addLine(r, blue_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i-1] * 20 - 100) * (-1)))
-                scene.addLine(r, blue_pen)
+                self.scene.addLine(r, blue_pen)
             else:
                 if y_distance_vals[i-1] == 1:
                     r = QtCore.QLineF(
                         QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)),
                         QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
-                    scene.addLine(r, blue_pen)
+                    self.scene.addLine(r, blue_pen)
                 else:
                     r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
-                    scene.addLine(r, blue_pen)
+                    self.scene.addLine(r, blue_pen)
+
+        threading.Thread(target=self.change_values).start()
+
+    def change_values(self):
+        global x_value_mouse_move
+        while True:
+            self.lineEdit_3.setText(str(self.y_temp[int(x_value_mouse_move/20+1)]))
+            self.lineEdit_4.setText(str(self.y_volt[int(x_value_mouse_move/20+1)]))
+            self.lineEdit_5.setText(str(self.y_dist[int(x_value_mouse_move/20+1)]))
 
 
 class Ui_MainWindow(object):
