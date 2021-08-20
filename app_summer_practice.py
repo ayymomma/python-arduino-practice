@@ -362,6 +362,7 @@ class FlagsWindow(QWidget):
         self.y_temp = []
         self.y_volt = []
         self.y_dist = []
+        self.fsf_vals = [1] * 30
         self.stop = False
 
     def setupUi(self):
@@ -420,6 +421,13 @@ class FlagsWindow(QWidget):
         self.label_5.setFont(font)
         self.label_5.setStyleSheet("color: yellow;")
         self.label_5.setObjectName("label_5")
+
+        self.label_6 = QtWidgets.QLabel(self)
+        self.label_6.setGeometry(QtCore.QRect(20, 280, 81, 16))
+        self.label_6.setFont(font)
+        self.label_6.setStyleSheet("color: red;")
+        self.label_6.setObjectName("label_6")
+
         self.lineEdit_3 = QtWidgets.QLineEdit(self)
         self.lineEdit_3.setGeometry(QtCore.QRect(300, 100, 113, 22))
         self.lineEdit_3.setStyleSheet("border-color: rgb(56, 56, 56);\n"
@@ -441,8 +449,18 @@ class FlagsWindow(QWidget):
                                       "border-style:inset;")
         self.lineEdit_5.setObjectName("lineEdit_5")
         self.lineEdit_5.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.lineEdit_6 = QtWidgets.QLineEdit(self)
+        self.lineEdit_6.setGeometry(QtCore.QRect(300, 280, 113, 22))
+        self.lineEdit_6.setStyleSheet("border-color: rgb(56, 56, 56);\n"
+                                      "border-width : 1.2px;\n"
+                                      "border-style:inset;")
+        self.lineEdit_6.setObjectName("lineEdit_6")
+        self.lineEdit_6.setAlignment(QtCore.Qt.AlignCenter)
+
+
         self.graphicsView = MyGraphicsView(self)
-        self.graphicsView.setGeometry(QtCore.QRect(490, 80, 570, 170))
+        self.graphicsView.setGeometry(QtCore.QRect(490, 80, 570, 270))
         self.graphicsView.setObjectName("graphicsView")
 
 
@@ -452,11 +470,12 @@ class FlagsWindow(QWidget):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("Form", "Form"))
-        self.lineEdit.setText(_translate("Form", "    VARIABLES NAME"))
-        self.lineEdit_2.setText(_translate("Form", "            VALUES"))
+        self.lineEdit.setText(_translate("Form", "VARIABLES NAME"))
+        self.lineEdit_2.setText(_translate("Form", "VALUES"))
         self.label.setText(_translate("Form", "H-Bridge & Motor Temperature"))
         self.label_3.setText(_translate("Form", "DC-Link"))
         self.label_5.setText(_translate("Form", "Ultrasonic Sensor"))
+        self.label_6.setText(_translate("Form", "Motor State"))
 
     def draw_flags(self, x_vals, y_temp_vals, y_voltage_vals, y_distance_vals):
         self.scene = QtWidgets.QGraphicsScene()
@@ -467,12 +486,17 @@ class FlagsWindow(QWidget):
         self.y_volt = y_voltage_vals
         self.y_dist = y_distance_vals
 
+        self.fsf_vals = [1] * 30
+
         for i in range(1, len(x_vals)):
             red_pen = QtGui.QPen(QtCore.Qt.red)
             yellow_pen = QtGui.QPen(QtCore.Qt.yellow)
             blue_pen = QtGui.QPen(QtCore.Qt.blue)
 
             if y_temp_vals[i] == 1:
+                self.fsf_vals[i] = 2
+                for j in range(i+1,len(self.fsf_vals)):
+                    self.fsf_vals[j] = 0
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i - 1] * 20) * (-1)),
                                   QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_temp_vals[i] * 20) * (-1)))
                 self.scene.addLine(r, red_pen)
@@ -493,6 +517,9 @@ class FlagsWindow(QWidget):
                     self.scene.addLine(r, red_pen)
 
             if y_voltage_vals[i] == 1:
+                self.fsf_vals[i] = 3
+                for j in range(i+1,len(self.fsf_vals)):
+                    self.fsf_vals[j] = 0
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i - 1] * 20 - 50) * (-1)),
                                   QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_voltage_vals[i] * 20 - 50) * (-1)))
                 self.scene.addLine(r, yellow_pen)
@@ -513,6 +540,9 @@ class FlagsWindow(QWidget):
                     self.scene.addLine(r, yellow_pen)
 
             if y_distance_vals[i] == 1:
+                self.fsf_vals[i] = 4
+                for j in range(i+1,len(self.fsf_vals)):
+                    self.fsf_vals[j] = 0
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (y_distance_vals[i - 1] * 20 - 100) * (-1)),
                                   QtCore.QPoint(((x_vals[i - 1]) * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
                 self.scene.addLine(r, blue_pen)
@@ -533,6 +563,30 @@ class FlagsWindow(QWidget):
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (y_distance_vals[i] * 20 - 100) * (-1)))
                     self.scene.addLine(r, blue_pen)
 
+            if self.fsf_vals[i] == 2 or self.fsf_vals[i] == 3 or self.fsf_vals[i] == 4:
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i - 1] * 20 - 200) * (-1)),
+                                  QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
+                self.scene.addLine(r, red_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
+                self.scene.addLine(r, red_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i - 1] * 20 - 200) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
+                self.scene.addLine(r, red_pen)
+                r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (20 - 200) * (-1)),
+                                  QtCore.QPoint((x_vals[i] * 19) * 1, (- 200) * (-1)))
+                self.scene.addLine(r, red_pen)
+            else:
+                if self.fsf_vals[i-1] == 2 or self.fsf_vals[i-1] == 3 or self.fsf_vals[i-1] == 4:
+                    r = QtCore.QLineF(
+                        QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)),
+                        QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
+                    self.scene.addLine(r, red_pen)
+                else:
+                    r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i - 1] * 20 - 200) * (-1)),
+                                      QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
+                    self.scene.addLine(r, red_pen)
+
         self.stop = False
         self.thr = threading.Thread(target=self.change_values)
         self.thr.start()
@@ -544,6 +598,7 @@ class FlagsWindow(QWidget):
             self.lineEdit_3.setText(str(self.y_temp[int(x_value_mouse_move/20+1)]))
             self.lineEdit_4.setText(str(self.y_volt[int(x_value_mouse_move/20+1)]))
             self.lineEdit_5.setText(str(self.y_dist[int(x_value_mouse_move/20+1)]))
+            self.lineEdit_6.setText(str(self.fsf_vals[int(x_value_mouse_move/20+1)]))
 
 
     def closeEvent(self, event):
