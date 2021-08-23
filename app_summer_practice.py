@@ -425,7 +425,7 @@ class FlagsWindow(QWidget):
         self.label_6 = QtWidgets.QLabel(self)
         self.label_6.setGeometry(QtCore.QRect(20, 280, 81, 16))
         self.label_6.setFont(font)
-        self.label_6.setStyleSheet("color: red;")
+        self.label_6.setStyleSheet("color: green;")
         self.label_6.setObjectName("label_6")
 
         self.lineEdit_3 = QtWidgets.QLineEdit(self)
@@ -460,7 +460,7 @@ class FlagsWindow(QWidget):
 
 
         self.graphicsView = MyGraphicsView(self)
-        self.graphicsView.setGeometry(QtCore.QRect(490, 80, 570, 270))
+        self.graphicsView.setGeometry(QtCore.QRect(490, 80, 560, 270))
         self.graphicsView.setObjectName("graphicsView")
 
 
@@ -469,7 +469,7 @@ class FlagsWindow(QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("Form", "Form"))
+        self.setWindowTitle(_translate("Form", "Flags Window"))
         self.lineEdit.setText(_translate("Form", "VARIABLES NAME"))
         self.lineEdit_2.setText(_translate("Form", "VALUES"))
         self.label.setText(_translate("Form", "H-Bridge & Motor Temperature"))
@@ -492,7 +492,7 @@ class FlagsWindow(QWidget):
             red_pen = QtGui.QPen(QtCore.Qt.red)
             yellow_pen = QtGui.QPen(QtCore.Qt.yellow)
             blue_pen = QtGui.QPen(QtCore.Qt.blue)
-
+            green_pen = QtGui.QPen(QtCore.Qt.green)
             if y_temp_vals[i] == 1:
                 self.fsf_vals[i] = 2
                 for j in range(i+1,len(self.fsf_vals)):
@@ -566,26 +566,26 @@ class FlagsWindow(QWidget):
             if self.fsf_vals[i] == 2 or self.fsf_vals[i] == 3 or self.fsf_vals[i] == 4:
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i - 1] * 20 - 200) * (-1)),
                                   QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
-                self.scene.addLine(r, red_pen)
+                self.scene.addLine(r, green_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
-                self.scene.addLine(r, red_pen)
+                self.scene.addLine(r, green_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i - 1] * 20 - 200) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
-                self.scene.addLine(r, red_pen)
+                self.scene.addLine(r, green_pen)
                 r = QtCore.QLineF(QtCore.QPoint((x_vals[i] * 19) * 1, (20 - 200) * (-1)),
                                   QtCore.QPoint((x_vals[i] * 19) * 1, (- 200) * (-1)))
-                self.scene.addLine(r, red_pen)
+                self.scene.addLine(r, green_pen)
             else:
                 if self.fsf_vals[i-1] == 2 or self.fsf_vals[i-1] == 3 or self.fsf_vals[i-1] == 4:
                     r = QtCore.QLineF(
                         QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)),
                         QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
-                    self.scene.addLine(r, red_pen)
+                    self.scene.addLine(r, green_pen)
                 else:
                     r = QtCore.QLineF(QtCore.QPoint((x_vals[i - 1] * 19) * 1, (self.fsf_vals[i - 1] * 20 - 200) * (-1)),
                                       QtCore.QPoint((x_vals[i] * 19) * 1, (self.fsf_vals[i] * 20 - 200) * (-1)))
-                    self.scene.addLine(r, red_pen)
+                    self.scene.addLine(r, green_pen)
 
         self.stop = False
         self.thr = threading.Thread(target=self.change_values)
@@ -1080,6 +1080,12 @@ class Ui_MainWindow(object):
             self.y_values_voltage.append(0)
             self.y_values_temperature.append(0)
             self.y_values_distance.append(0)
+
+        if len(self.x_values_for_flags) > 30:
+            self.x_values_for_flags = self.x_values_for_flags[0:29]
+            self.y_values_voltage = self.y_values_voltage[0:29]
+            self.y_values_distance = self.y_values_distance[0:29]
+            self.y_values_temperature = self.y_values_temperature[0:29]
 
         self.flagsWindow.setVisible(True)
         self.flagsWindow.activateWindow()

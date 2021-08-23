@@ -3,15 +3,12 @@
 
 //const char *ssid =  "DIGI-T53k";    
 //const char *pass =  "TF359U9k";
-//const char *ssid = "ureche";
-//const char *pass = "qwerty123";
-const char *ssid =  "TP-LINK_B1C8";    
-const char *pass =  "20243036";
+const char *ssid = "ureche";
+const char *pass = "qwerty123";
 
 const uint16_t port = 50100;
-//const char *host = "192.168.100.44";
+const char *host = "192.168.188.45";
 //const char *host = "192.168.43.198";
-const char *host = "192.168.0.104";
 
 char test_case = '0';
 float voltage_value = 0.0;
