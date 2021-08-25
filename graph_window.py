@@ -1,11 +1,9 @@
 from PyQt5.QtWidgets import QWidget
-
-import settings
 from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
-
+import settings
 
 class MplCanvas(Canvas):
     def __init__(self):
