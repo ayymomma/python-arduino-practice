@@ -747,15 +747,125 @@ palette.setColor(QPalette.Link, QColor(42, 130, 218))
 palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
 palette.setColor(QPalette.HighlightedText, Qt.black)
 
+import mysql.connector as mc
+
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(352, 271)
+        self.lineEditEmail = QtWidgets.QLineEdit(Form)
+        self.lineEditEmail.setGeometry(QtCore.QRect(110, 100, 131, 20))
+        self.lineEditEmail.setObjectName("lineEdit")
+        self.lineEditEmail.setStyleSheet("""QLineEdit{
+                                    border-width: 1px;
+                                    padding: 1px;
+                                    border-style: solid;
+                                    border-radius: 10px
+                                    }""")
+
+        self.lineEditPassword = QtWidgets.QLineEdit(Form)
+        self.lineEditPassword.setGeometry(QtCore.QRect(110, 150, 131, 20))
+        self.lineEditPassword.setObjectName("lineEdit_2")
+        self.lineEditPassword.setStyleSheet("""QLineEdit{
+                                            border-width: 1px;
+                                            padding: 1px;
+                                            border-style: solid;
+                                            border-radius: 10px
+                                            }""")
+        self.lineEditPassword.setEchoMode(QtWidgets.QLineEdit.Password)
+
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(160, 80, 47, 13))
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(150, 130, 47, 13))
+        self.label_2.setObjectName("label_2")
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(120, 190, 111, 23))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.setStyleSheet("""QPushButton {
+                                            border-width: 1px;
+                                            padding: 1px;
+                                            border-style: solid;
+                                            border-radius:10px;
+                                            background: qlineargradient(
+                                                x1:0, y1:0, x2:1, y2:1,
+                                                stop: 0.01 orange, stop: 0.8 rgb(255,140,0), stop:0 white
+                                            )
+                                            }""")
+        self.pushButton.clicked.connect(self.login)
+
+        self.labelResult = QtWidgets.QLabel(Form)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.labelResult.setFont(font)
+        self.labelResult.setGeometry(QtCore.QRect(16, 230, 321, 20))
+        self.labelResult.setText("")
+        self.labelResult.setObjectName("labelResult")
+
+        self.image_label = QtWidgets.QLabel(Form)
+        self.image_label.setGeometry(QtCore.QRect(65, -20, 350, 120))
+        pixmap = QPixmap("Images" + os.path.sep + "conti.png")
+        pixmap = pixmap.scaled(300, 100, QtCore.Qt.KeepAspectRatio)
+        self.image_label.setPixmap(pixmap)
+
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def login(self):
+        try:
+            email = self.lineEditEmail.text()
+            password = self.lineEditPassword.text()
+
+            mydb = mc.connect(
+                host="remotemysql.com",
+                user="yTDutguUaL",
+                password="n2NTQEy74T",
+                database="yTDutguUaL"
+
+            )
+
+            mycursor = mydb.cursor()
+            query = "SELECT email,password from users where email " \
+                    "like '" + email + "'and password like '" \
+                    + password + "'"
+            mycursor.execute(query)
+            result = mycursor.fetchone()
+
+            if result == None:
+                self.labelResult.setText("Incorrect email or password")
+
+            else:
+                self.labelResult.setText("You are logged in")
+                mydialog = Ui_MainWindow()
+                MainWindow = QtWidgets.QMainWindow()
+                mydialog.setupUi(MainWindow)
+                MainWindow.show()
+
+
+        except mc.Error as e:
+            self.labelResult.setText("Error")
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Login", "Login"))
+        self.label.setText(_translate("Login", "Email"))
+        self.label_2.setText(_translate("Login", "Password"))
+        self.pushButton.setText(_translate("Login", "Login"))
+
 
 def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
     app.setPalette(palette)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    Form = QtWidgets.QWidget()
+    ui = Ui_Form()
+    ui.setupUi(Form)
+    Form.show()
     sys.exit(app.exec_())
 
 
