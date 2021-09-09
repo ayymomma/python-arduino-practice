@@ -189,27 +189,22 @@ void loop() {
   {
       String command = Serial.readStringUntil('+');
       String sens = Serial.readStringUntil('+');
-      String command_viteza = Serial.readStringUntil('\n');
-
+      String viteza = Serial.readStringUntil('\n');
       command.replace("b"," ");
       command.replace("'"," ");
-      command_viteza.replace("b"," ");
-      command_viteza.replace("'"," ");
+      viteza.replace("b"," ");
+      viteza.replace("'"," ");
       command.trim();
       sens.trim();
-      command_viteza.trim();     
-
+      viteza.trim();     
       if( sens.equals("2"))
         sns = -1;
        else
         sns = 1;
-      
       if (command.equals("START"))
       {
-        Serial.println("Am intrat pe ramura de comanda manuala!");
         SET_PWM_DUTY(PWM_START_DUTY);
         int i = 5000;
-        // motor start
         while(i > 100)
         {
           delayMicroseconds(i);
@@ -223,13 +218,13 @@ void loop() {
         }
         motor_speed = PWM_START_DUTY;
         PCICR  = 4;
-        int viteza = command_viteza.toInt();
-        Serial.println(viteza);
+        int viteza_int = viteza.toInt();
+        Serial.println(viteza_int);
         while(1)
         { 
           if(motor_speed < PWM_MIN_DUTY)
             motor_speed = PWM_MIN_DUTY;
-          SET_PWM_DUTY(viteza);
+          SET_PWM_DUTY(viteza_int);
           if (Serial.available()) 
           {
               String command = Serial.readStringUntil('\n');
@@ -239,7 +234,6 @@ void loop() {
               Serial.println(command);
               if (command.equals("STOP"))
               {
-                 Serial.println("Am intrat pe ramura cu stop_manual");
                  exit(0);
               }
           }
