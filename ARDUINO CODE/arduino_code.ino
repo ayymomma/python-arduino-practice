@@ -1,8 +1,4 @@
-/* Controlul unui motor BLDC utilizand arduino.
- * Viteza motorului BLDC este controlata extern de la potentiometru sau intern de la interfata de control.
- * Implementeaza cele doua moduri de control AUTOMAT si MANUAL
- * Cod adaptat dupa resursa [13] din documentatia proiectului de licenta
- */
+
 #define PWM_MAX_DUTY      255
 #define PWM_MIN_DUTY      50
 #define PWM_START_DUTY    100
